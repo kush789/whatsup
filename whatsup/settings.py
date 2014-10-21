@@ -3,6 +3,13 @@
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+from os.path import abspath, dirname, basename, join
+import os
+
+ROOT_PATH = abspath(dirname(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
@@ -11,11 +18,10 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
-        # The following settings are not used with sqlite3:
-        'USER': '',
-        'PASSWORD': '',
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'whatsup',                      # Or path to database file if using sqlite3.
+        'USER': 'root',
+        'PASSWORD': 'kush@1996',
         'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
     }
@@ -98,8 +104,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 ROOT_URLCONF = 'whatsup.urls'
@@ -111,6 +116,8 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    join(ROOT_PATH, 'templates'),
+
 )
 
 INSTALLED_APPS = (
@@ -120,39 +127,42 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'bootstrapform',
+    'django.contrib.admin',
+    'whats',
+    'social.apps.django_app.default',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    }
-}
+AUTHENTICATION_BACKENDS = (
+    'social.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+  "social_auth.context_processors.social_auth_by_type_backends",
+  "django.contrib.auth.context_processors.auth",
+)
+
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGIN_ERROR_URL = '/error/'
+
+SOCIAL_AUTH_DEFAULT_USERNAME = 'new_social_auth_user'
+SOCIAL_AUTH_UID_LENGTH = 64
+SOCIAL_AUTH_ASSOCIATION_HANDLE_LENGTH = 32
+SOCIAL_AUTH_NONCE_SERVER_URL_LENGTH = 32
+SOCIAL_AUTH_ASSOCIATION_SERVER_URL_LENGTH = 32
+SOCIAL_AUTH_ASSOCIATION_HANDLE_LENGTH = 32
+
+SOCIAL_AUTH_ENABLED_BACKENDS = ('google')
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '687886481724-je0qi05umphgn2fgltb815fl9ph6blbo.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'CeWNgNfESriZAvzS9cmk20gn'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS = ['iiitd.ac.in', 'gmail.com']
+
+

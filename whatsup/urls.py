@@ -1,4 +1,6 @@
 from django.conf.urls import patterns, include, url
+from views import *
+
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -14,4 +16,10 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
+
+
+
+	url(r'^$', index, name='home'), #index page
+	url('', include('social.apps.django_app.urls', namespace='social')),
+	url(r'^logout$', logout )
 )
