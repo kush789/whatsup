@@ -17,9 +17,14 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
 
-
+    #genral
 
 	url(r'^$', index, name='home'), #index page
 	url('', include('social.apps.django_app.urls', namespace='social')),
-	url(r'^logout$', logout )
+	url(r'^logout$', logout),
+
+    #user specific
+
+    url(r'^update$', update),
+    url(r'^home', home)
 )
