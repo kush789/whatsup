@@ -26,5 +26,16 @@ urlpatterns = patterns('',
     #user specific
 
     url(r'^update$', update),
-    url(r'^home', home)
+    url(r'^myposts$', myposts),
+    url(r'^home', home),
+
+
+    #public urls
+
+    url(r'^viewpost/(?P<param>.+)', viewpost),
+    url(r'^viewuser/(?P<param>.+)', viewuser),
+    url(r'^deletepost/(?P<param>.+)', deletepost),
+    url(r'^deletecomment/(?P<param>.+)', deletecomment),
+    url(r'^addcomment/(?P<param>.+)', addcomment),
+
 )

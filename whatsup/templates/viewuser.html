@@ -53,7 +53,7 @@
 
                     <ul class="nav navbar-nav">
                       <li>
-                        <a href="#">Whatsup</a>
+                        <a href="/home">Whatsup</a>
                       </li>
 
                     </ul>
@@ -80,7 +80,7 @@
                      			   <img src="https://lh3.googleusercontent.com/uFp_tsTJboUY7kue5XAsGA=s28" width="100px" height="100px">
 								</div>
                                 <div class="panel-body">
-                                  <p class="lead">{{ user.fname }}</p>
+                                  <p class="lead">{{ newuser.fname }}&nbsp{{ newuser.lname }}</p>
                                   <p>45 Followers, {{count}} Posts</p>
                                   
                                   <p>
@@ -88,28 +88,7 @@
                                 </div>
                               </div>
 
-
-                           
-                              <div class="well"> 
-                                   <form class="form-horizontal" role="form" enctype= 'multipart/form-data' method = 'POST' action = '/home'>{% csrf_token %}
-                                    <h3>What is up?</h3>
-                                    <div class = 'row'>
-                                    	<div class = 'col-md-1'></div>
-                                    	<div class = 'col-md-10'>
-                                    		{{ postform | bootstrap }}
-                                    	</div>
-                                    </div>
-                                    <input type = 'submit' class="btn btn-primary pull-right" value = 'upload'><br><br>
-
-                                  </form>
-                              </div>
-
-
-
- 
-
-
-
+<!--
                               <div class="panel panel-default">
                                  <div class="panel-heading"><h4>View Friends</h4></div>
                                   <div class="panel-body">
@@ -120,7 +99,7 @@
                                     </div>
                               </div>
                            
-                            
+-->                           
                           </div>
                           
                           <!-- main col right -->
@@ -133,7 +112,6 @@
                                  		<div class = 'col-md-8'>
                                  			<h4>{{post.title}}</h4>
                                  		</div>
-                                 		<div class = 'col-md-4'style = 'font-size:25px;'>{{post.fname}}&nbsp{{post.lname}}</div>
 
                                  	</div>
                                  </div>
@@ -146,48 +124,26 @@
                                     <hr>
                                     <div class = 'row'>
                                     	<div class = 'col-md-6'>
-                                      		<button class = 'btn btn-success btn-sm'>{{post.upcount}}</button>
+                                      		<button class = 'btn btn-success'>{{post.upcount}}</button>
                                       		upvotes&nbsp&nbsp
-                                     		<button class = 'btn btn-danger btn-sm'>{{post.downcount}}</button>
+                                     		<button class = 'btn btn-danger'>{{post.downcount}}</button>
                                      		downvotes
                                      	</div>
-                                     	<div class = 'col-md-4'></div>
-                                     	<div class = 'col-md-2'>
-                                        <a href = '/viewpost/{{post.pid}}' class = 'btn btn-default btn-sm'>View Post</a>
-                                      </div>
+                                     	<div class = 'col-md-3'></div>
+                                     	<div class = 'col-md-3' style = 'font-size:20px;'></div>
 
                                      </div>
 
                                     <hr>
-
-                                {% for key,commentdict in mastercomment.items %}
-                                  {% if key == post.pid %}
-                                    {% for comment in commentdict %}
-                                    <div class = 'well'>
-                                      <div class = 'row'>
-                                      <div class = 'col-md-9'>
-                                        {{ comment.commenttext}}
-
+                                    <form>
+                                    <div class="input-group">
+                                      <div class="input-group-btn">
+                                      <button class="btn btn-success">+1</button><button class="btn btn-danger">-1</button>
                                       </div>
-                                      {% if comment.uid == user.uid %}
-                                      <div class = 'col-md-1'><b>you</b></div>
-                                      <div class = 'col-md-1'>
-                                        <form method = 'link' action = '/deletecomment/{{comment.cid}}'>
-                                          <button type = 'submit' class = 'btn  btn-danger btn-xs'>Delete</button>
-                                        </form>
-                                      </div>
-                                      {% else %}
-                                      <div class= 'col-md-3' style = 'text-align:right'>
-                                        {{ curruser.fname}} {{curruser.lname}}
-
-                                      </div>
-                                      {% endif %}
+                                      <input type="text" class="form-control" placeholder="Add a comment..">
                                     </div>
-                                  </div>
-                                  {% endfor %}
-                                  {% endif %}
-                                  {% endfor %}
-
+                                    </form>
+                                    
                                   </div>
                                </div>
                             

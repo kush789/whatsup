@@ -1,3 +1,4 @@
+
 {% load bootstrap %}
 
 <!DOCTYPE html>
@@ -29,9 +30,8 @@
                     <li ><a href="/home"><i class="fa fa-home"></i>&nbspHome</a></li>
                     <li><a href="#stories"><i class="fa fa-line-chart"></i> &nbsp&nbspTrending </a></li>
                     <li><a href="/myposts"><i class="fa fa-user"></i> &nbspMy Posts </a></li>
-                    <li><a href="/home"><i class="fa fa-refresh"></i> &nbspRefresh </a></li>
                 </ul>
-                         
+              
             </div>
             <!-- /sidebar -->
           
@@ -53,7 +53,7 @@
 
                     <ul class="nav navbar-nav">
                       <li>
-                        <a href="#">Whatsup</a>
+                        <a href="/home">Whatsup</a>
                       </li>
 
                     </ul>
@@ -65,78 +65,28 @@
                   	</nav>
                 </div>
                 <!-- /top nav -->
-              
+
                 <div class="padding">
                     <div class="full col-sm-9">
-                      
+                    {% for post in allposts %}
                         <!-- content -->                      
                       	<div class="row">
                           
                          <!-- main col left --> 
-                         <div class="col-sm-5">
-                           
-                              <div class="panel panel-default">
-                                <div class="panel-thumbnail">
-                     			   <img src="https://lh3.googleusercontent.com/uFp_tsTJboUY7kue5XAsGA=s28" width="100px" height="100px">
-								</div>
-                                <div class="panel-body">
-                                  <p class="lead">{{ user.fname }}</p>
-                                  <p>45 Followers, {{count}} Posts</p>
-                                  
-                                  <p>
-                                   </p>
-                                </div>
-                              </div>
 
-
-                           
-                              <div class="well"> 
-                                   <form class="form-horizontal" role="form" enctype= 'multipart/form-data' method = 'POST' action = '/home'>{% csrf_token %}
-                                    <h3>What is up?</h3>
-                                    <div class = 'row'>
-                                    	<div class = 'col-md-1'></div>
-                                    	<div class = 'col-md-10'>
-                                    		{{ postform | bootstrap }}
-                                    	</div>
-                                    </div>
-                                    <input type = 'submit' class="btn btn-primary pull-right" value = 'upload'><br><br>
-
-                                  </form>
-                              </div>
-
-
-
- 
-
-
-
-                              <div class="panel panel-default">
-                                 <div class="panel-heading"><h4>View Friends</h4></div>
-                                  <div class="panel-body">
-  
-                                    <div class="clearfix"></div>
-
-                                    {{ friends }}
-                                    </div>
-                              </div>
-                           
-                            
-                          </div>
-                          
                           <!-- main col right -->
-                          {% for post in allposts %}
-                          <div class = 'col-sm-5'></div>
-                          <div class="col-sm-7">
+                          <div class = 'col-sm-2'></div>
+                          <div class="col-sm-8">
                                <div class="panel panel-default">
                                  <div class="panel-heading">
-                                 	<div class = 'row'>
-                                 		<div class = 'col-md-8'>
-                                 			<h4>{{post.title}}</h4>
-                                 		</div>
-                                 		<div class = 'col-md-4'style = 'font-size:25px;'>{{post.fname}}&nbsp{{post.lname}}</div>
-
-                                 	</div>
-                                 </div>
+                                  <div class = 'row'>
+                                    <div class = 'col-md-8'>
+                                      <h4>{{post.title}}</h4>
+                                    </div>
+                                    <div class = 'col-md-4' style = 'font-size:25px;'>{{post.fname}}&nbsp{{post.lname}}
+                                    </div>
+                                  </div>
+                                  </div>
                                   <div class="panel-body">
                                     <img src="//placehold.it/150x150" class="img-circle pull-right"> 
                                     {% if post.postimage %}
@@ -144,22 +94,33 @@
                                     {% endif %}
                                     <div class="clearfix">{{post.posttext}}</div>
                                     <hr>
-                                    <div class = 'row'>
-                                    	<div class = 'col-md-6'>
-                                      		<button class = 'btn btn-success btn-sm'>{{post.upcount}}</button>
-                                      		upvotes&nbsp&nbsp
-                                     		<button class = 'btn btn-danger btn-sm'>{{post.downcount}}</button>
-                                     		downvotes
-                                     	</div>
-                                     	<div class = 'col-md-4'></div>
-                                     	<div class = 'col-md-2'>
-                                        <a href = '/viewpost/{{post.pid}}' class = 'btn btn-default btn-sm'>View Post</a>
+                                   <div class = 'row'>
+                                      <div class = 'col-md-6'>
+                                          <button class = 'btn btn-success btn-md'>{{post.upcount}}</button>
+                                          upvotes&nbsp&nbsp
+                                        <button class = 'btn btn-danger btn-md'>{{post.downcount}}</button>
+                                        downvotes
                                       </div>
-
-                                     </div>
-
+                                      <div class = 'col-md-2'></div>
+                                      <div class = 'col-md-2'>
+                                        <a href = '/viewpost/{{post.pid}}' class = 'btn btn-default btn-md'>View Post</a>
+                                      </div>
+                                       <div class = 'col-md-2'>
+                                        <a href = '/deletepost/{{post.pid}}' class = 'btn btn-danger btn-md'>Delete Post</a>
+                                      </div>
+                                    </div>
                                     <hr>
+                                    <!--
+                                    <form>
+                                    <div class="input-group">
+                                      <div class="input-group-btn">
+                                      <button class="btn  btn-success">+1</button><button class="btn btn-danger">-1</button>
+                                      </div>
+                                      <input type="text" class="form-control" placeholder="Add a comment..">
+                                    </div>
+                                    </form>
 
+-->
                                 {% for key,commentdict in mastercomment.items %}
                                   {% if key == post.pid %}
                                     {% for comment in commentdict %}
@@ -169,7 +130,7 @@
                                         {{ comment.commenttext}}
 
                                       </div>
-                                      {% if comment.uid == user.uid %}
+                                      {% if comment.uid == curruser.uid %}
                                       <div class = 'col-md-1'><b>you</b></div>
                                       <div class = 'col-md-1'>
                                         <form method = 'link' action = '/deletecomment/{{comment.cid}}'>
@@ -187,16 +148,27 @@
                                   {% endfor %}
                                   {% endif %}
                                   {% endfor %}
-
+                                    
                                   </div>
+                                    <form method = 'POST' action = '/addcomment/{{post.pid}}'>
+                                      {% csrf_token %}
+                                    <div class="row">
+                                      <div class = 'col-md-10'>
+                                        {{ commentform | bootstrap }}
+                                      </div>
+                                      <div class = 'col-md-2'><br>
+                                        <input type = 'submit' class = 'btn btn-md btn-success' value = 'Comment'>
+                                      </div>
+                                    </div>
+                                    </form>
+
                                </div>
                             
                           </div>
 
-                          {% endfor %}
                        </div><!--/row-->
                       
-                         
+                         {% endfor %}
                       
                     </div><!-- /col-9 -->
                 </div><!-- /padding -->

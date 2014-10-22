@@ -13,3 +13,22 @@ class userinfo_form(forms.ModelForm):
 	class Meta:
 		model = usersinfo
 		fields = ('loginid','fname','lname','number')
+
+
+class post_form(forms.ModelForm):
+	posttitle = forms.CharField(max_length = 50, label = 'Title',widget = forms.TextInput)
+	posttext = forms.CharField(max_length = 300, label = 'Body', widget = forms.TextInput)
+	postimage = forms.FileField(required = False, label = 'Upload Image')
+
+	class Meta:
+		model = posts
+		fields = ('posttitle','posttext', 'postimage')
+
+class comment_form(forms.ModelForm):
+	commenttext = forms.CharField(max_length = 300, label = ' ', widget = forms.TextInput)
+
+	class Meta:
+		model = comments
+		fields = ('commenttext',)
+#		model = comments
+#		fields = ('commenttext')
