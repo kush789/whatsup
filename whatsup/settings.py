@@ -148,7 +148,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/update'
+LOGIN_REDIRECT_URL = '/home'
 LOGIN_ERROR_URL = '/error/'
 
 SOCIAL_AUTH_DEFAULT_USERNAME = 'new_social_auth_user'
