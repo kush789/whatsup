@@ -38,3 +38,8 @@ class comments(models.Model):
 	downcount = models.IntegerField(max_length = 15, default = 0)
 	timestamp = models.DateTimeField(auto_now = True)
 
+class follows(models.Model):
+	id = models.AutoField(primary_key = True)
+	uid = models.IntegerField(max_length = 25)
+	fid = models.IntegerField(max_length = 25)
+

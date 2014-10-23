@@ -28,7 +28,7 @@
                
                 <ul class="nav hidden-xs" id="lg-menu">
                     <li ><a href="/home"><i class="fa fa-home"></i>&nbspHome</a></li>
-                    <li><a href="#stories"><i class="fa fa-line-chart"></i> &nbsp&nbspTrending </a></li>
+                    <li><a href="/discover"><i class="fa fa-line-chart"></i> &nbsp&nbspDiscover </a></li>
                     <li><a href="/myposts"><i class="fa fa-user"></i> &nbspMy Posts </a></li>
                 </ul>
               
@@ -110,17 +110,19 @@
                                       </div>
                                     </div>
                                     <hr>
-                                    <!--
-                                    <form>
-                                    <div class="input-group">
-                                      <div class="input-group-btn">
-                                      <button class="btn  btn-success">+1</button><button class="btn btn-danger">-1</button>
+
+                                    <form method = 'POST' action = '/viewpost/{{post.pid}}'>
+                                      {% csrf_token %}
+                                    <div class="row">
+                                      <div class = 'col-md-10'>
+                                        {{ commentform | bootstrap }}
                                       </div>
-                                      <input type="text" class="form-control" placeholder="Add a comment..">
+                                      <div class = 'col-md-2'><br>
+                                        <input type = 'submit' class = 'btn btn-md btn-success' value = 'Comment'>
+                                      </div>
                                     </div>
                                     </form>
-
--->
+ 
                                 {% for key,commentdict in mastercomment.items %}
                                   {% if key == post.pid %}
                                     {% for comment in commentdict %}

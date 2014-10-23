@@ -28,6 +28,7 @@ urlpatterns = patterns('',
     url(r'^update$', update),
     url(r'^myposts$', myposts),
     url(r'^home', home),
+    url(r'^discover', discover),
 
 
     #public urls

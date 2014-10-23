@@ -38,10 +38,16 @@ def update(request):
 			curruser.status = 1
 			curruser.save()
 			return redirect('/home')
+
 		try:
 			curruser = usersinfo.objects.get(loginid = request.user.email)
 			form = userinfo_form(initial = {'loginid':curruser.loginid, 'fname':curruser.fname, 'lname': curruser.lname, 'number':curruser.number})
 			form.fields['loginid'].widget.attrs['readonly'] = True
+			try:
+				follow = follows(uid = curruser.uid, fid = curruser.uid)
+			except:
+				newfollow = follows(uid = curruser.uid, fid = curruser.uid)
+				newfollow.save()
 			return render(request, 'update.html', {'form':form})
 		except:
 			newuser = usersinfo(loginid = request.user.email, role = 1, number = 0, status = 0)
@@ -80,9 +86,30 @@ def home(request):
 		allposts = posts.objects.all()
 		allposts = allposts[::-1]
 		postform = post_form()
-		return render(request, 'home.html', {'count':count,'mastercomment':mastercomment,'postform':postform, 'user':curruser, 'allposts':allposts, 'path':MEDIA_ROOT})
+		commentform = comment_form
+		return render(request, 'home.html', {'count':count,'mastercomment':mastercomment,'commentform':commentform,'postform':postform, 'user':curruser, 'allposts':allposts, 'path':MEDIA_ROOT})
 	else:
 		return render(request, 'index.html',{'str':'You must log in first'})
+
+def discover(request):
+	if request.user.is_authenticated():
+		curruser = usersinfo.objects.get(loginid = request.user.email)
+		if curruser.status == 0:
+			return redirect('/update')
+		currpost = posts.objects.filter(uid = curruser.uid)
+		allposts = posts.objects.all()
+
+		commentdict = {}
+
+		for post in allposts:
+			commentdict[post.pid] = comments.objects.filter(pid = post.pid)
+
+		commentform = comment_form
+		return render(request, 'discover.html', {'allposts':allposts,'commentdict':commentdict,'count':len(currpost),'commentform':commentform})
+		
+	else:
+		return redirect('/')
+
 
 
 def save_image(file, path = ''):
@@ -97,8 +124,10 @@ def viewuser(request,param):
 		curruser = usersinfo.objects.get(loginid = request.user.email)
 		if curruser.status == 0:
 			return redirect('/update')		
+		if curruser.loginid == param:
+			return redirect('/home')
 		try:
-			newuser = usersinfo.objects.get(fname = param)
+			newuser = usersinfo.objects.get(loginid = param)
 			allposts = posts.objects.filter(uid = newuser.uid)
 			return render(request, 'viewuser.html',{'newuser':newuser, 'allposts':allposts, 'count':len(allposts)})
 		except:

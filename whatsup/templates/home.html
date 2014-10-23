@@ -27,7 +27,7 @@
                
                 <ul class="nav hidden-xs" id="lg-menu">
                     <li ><a href="/home"><i class="fa fa-home"></i>&nbspHome</a></li>
-                    <li><a href="#stories"><i class="fa fa-line-chart"></i> &nbsp&nbspTrending </a></li>
+                    <li><a href="/discover"><i class="fa fa-line-chart"></i> &nbsp&nbspDiscover </a></li>
                     <li><a href="/myposts"><i class="fa fa-user"></i> &nbspMy Posts </a></li>
                     <li><a href="/home"><i class="fa fa-refresh"></i> &nbspRefresh </a></li>
                 </ul>
@@ -133,7 +133,7 @@
                                  		<div class = 'col-md-8'>
                                  			<h4>{{post.title}}</h4>
                                  		</div>
-                                 		<div class = 'col-md-4'style = 'font-size:25px;'>{{post.fname}}&nbsp{{post.lname}}</div>
+                                 		<div class = 'col-md-4'style = 'font-size:25px;'><a href = '/viewuser/{{post.loginid}}'>{{post.fname}}&nbsp{{post.lname}}</a></div>
 
                                  	</div>
                                  </div>
@@ -160,6 +160,19 @@
 
                                     <hr>
 
+                                    <form method = 'POST' action = '/viewpost/{{post.pid}}'>
+                                      {% csrf_token %}
+                                    <div class="row">
+                                      <div class = 'col-md-10'>
+                                        {{ commentform | bootstrap }}
+                                      </div>
+                                      <div class = 'col-md-2'><br>
+                                        <input type = 'submit' class = 'btn btn-md btn-success' value = 'Comment'>
+                                      </div>
+                                    </div>
+                                    </form>
+                                    
+                                      
                                 {% for key,commentdict in mastercomment.items %}
                                   {% if key == post.pid %}
                                     {% for comment in commentdict %}
@@ -178,7 +191,7 @@
                                       </div>
                                       {% else %}
                                       <div class= 'col-md-3' style = 'text-align:right'>
-                                        {{ curruser.fname}} {{curruser.lname}}
+                                        {{ post.fname}} {{post.lname}}
 
                                       </div>
                                       {% endif %}

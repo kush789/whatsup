@@ -3,17 +3,17 @@
 
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<link href="../../static/files/css/bootstrap.min.css" rel="stylesheet">
+  <head>
+    <link href="../../static/files/css/bootstrap.min.css" rel="stylesheet">
 
-		<link href="../../static/files/css/homestyle.css" rel="stylesheet">
-	<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-	<link href='http://fonts.googleapis.com/css?family=Wire+One' rel='stylesheet' type='text/css'>
-	<link href='http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css
+    <link href="../../static/files/css/homestyle.css" rel="stylesheet">
+  <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href='http://fonts.googleapis.com/css?family=Wire+One' rel='stylesheet' type='text/css'>
+  <link href='http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css
 ' rel='stylesheet' type='text/css'>
 
-	</head>
-	<body>
+  </head>
+  <body>
 <div class="wrapper">
     <div class="box">
         <div class="row row-offcanvas row-offcanvas-left">
@@ -22,9 +22,9 @@
             <!-- sidebar -->
             <div class="column col-sm-2 col-xs-1 sidebar-offcanvas" id="sidebar">
               
-              	<ul class="nav">
-          			<li><a href="#" data-toggle="offcanvas" class="visible-xs text-center"><i class="glyphicon glyphicon-chevron-right"></i></a></li>
-            	</ul>
+                <ul class="nav">
+                <li><a href="#" data-toggle="offcanvas" class="visible-xs text-center"><i class="glyphicon glyphicon-chevron-right"></i></a></li>
+              </ul>
                
                 <ul class="nav hidden-xs" id="lg-menu">
                     <li ><a href="/home"><i class="fa fa-home"></i>&nbspHome</a></li>
@@ -39,17 +39,17 @@
             <div class="column col-sm-10 col-xs-11" id="main">
                 
                 <!-- top nav -->
-              	<div class="navbar navbar-blue navbar-static-top">  
+                <div class="navbar navbar-blue navbar-static-top">  
                     <div class="navbar-header">
                       <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
                         <span class="sr-only">Toggle</span>
                         <span class="icon-bar"></span>
-          				<span class="icon-bar"></span>
-          				<span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
                       </button>
                       <a href="/" class="navbar-brand logo">W</a>
-                  	</div>
-                  	<nav class="collapse navbar-collapse" role="navigation">
+                    </div>
+                    <nav class="collapse navbar-collapse" role="navigation">
 
                     <ul class="nav navbar-nav">
                       <li>
@@ -62,18 +62,17 @@
                         <a href="/logout">Log out&nbsp&nbsp&nbsp&nbsp</a>
                       </li>                      
                     </ul>
-                  	</nav>
+                    </nav>
                 </div>
                 <!-- /top nav -->
               
                 <div class="padding">
                     <div class="full col-sm-9">
-                      
+                         {% for post in allposts %}
                         <!-- content -->                      
-                      	<div class="row">
+                        <div class="row">
                           
                          <!-- main col left --> 
-
 
                           <!-- main col right -->
                           <div class = 'col-sm-2'></div>
@@ -110,13 +109,32 @@
                                       {% endif %}
                                     </div>
                                     <hr>
-                                    {% for comment in allcomments %}
+
+                                    <form method = 'POST' action = '/viewpost/{{post.pid}}'>
+                                      {% csrf_token %}
+                                    <div class="row">
+                                      <div class = 'col-md-10'>
+                                        {{ commentform | bootstrap }}
+                                      </div>
+                                      <div class = 'col-md-2'><br>
+                                        <input type = 'submit' class = 'btn btn-md btn-success' value = 'Comment'>
+                                      </div>
+                                    </div>
+                                    </form>
+                                    
+
+
+
+                                {% for key,commentarray in commentdict.items %}
+                                  {% if key == post.pid %}
+                                    {% for comment in commentarray %}
                                     <div class = 'well'>
                                       <div class = 'row'>
                                       <div class = 'col-md-9'>
-                                        {{ comment.commenttext }}
+                                        {{ comment.commenttext}}
+
                                       </div>
-                                      {% if comment.uid == curruser.uid %}
+                                      {% if comment.uid == user.uid %}
                                       <div class = 'col-md-1'><b>you</b></div>
                                       <div class = 'col-md-1'>
                                         <form method = 'link' action = '/deletecomment/{{comment.cid}}'>
@@ -131,27 +149,24 @@
                                       {% endif %}
                                     </div>
                                   </div>
-                                    {% endfor %}
-                                    <form method = 'POST' action = '/viewpost/{{post.pid}}'>
-                                      {% csrf_token %}
-                                    <div class="row">
-                                      <div class = 'col-md-10'>
-                                        {{ commentform | bootstrap }}
-                                      </div>
-                                      <div class = 'col-md-2'><br>
-                                        <input type = 'submit' class = 'btn btn-md btn-success' value = 'Comment'>
-                                      </div>
-                                    </div>
-                                    </form>
-                                    
+                                   {% endfor %}
+                                   {% endif %}
+                                   {% endfor %}
+
+
+
+
+
+
+
+
                                   </div>
                                </div>
                             
                           </div>
-
                        </div><!--/row-->
                       
-                         
+                          {% endfor %}
                       
                     </div><!-- /col-9 -->
                 </div><!-- /padding -->
@@ -162,9 +177,9 @@
     </div>
 </div>
 
-	<!-- script references -->
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-		<script src="../../static/files/js/bootstrap.min.js"></script>
-		<script src="./../static/files/js/homescripts.js"></script>
-	</body>
+  <!-- script references -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script src="../../static/files/js/bootstrap.min.js"></script>
+    <script src="./../static/files/js/homescripts.js"></script>
+  </body>
 </html>
