@@ -59,8 +59,10 @@ def update(request):
 
 def home(request):
 	if request.user.is_authenticated():
-		curruser = usersinfo.objects.get(loginid = request.user.email)
-
+		try:
+			curruser = usersinfo.objects.get(loginid = request.user.email)
+		except:
+			return redirect('/update')
 		if curruser.status == 0:
 			return redirect('/update')
 
@@ -119,6 +121,37 @@ def save_image(file, path = ''):
 		fd.write(chunk)
 	fd.close()
 
+def follow(request,param):
+	if request.user.is_authenticated():
+		followuser = usersinfo.objects.get(loginid = param)
+		curruser = usersinfo.objects.get(loginid = request.user.email)
+		if curruser.status == 0:
+			return redirect('/update')
+		try:
+			findfollow = follows.objects.get(uid= curruser.uid, fid = followuser.uid)
+		except:
+			newfollow = follows(uid= curruser.uid, fid = followuser.uid)
+			newfollow.save()
+		return redirect('/viewuser/'+str(param))
+	else:
+		return redirect('/')
+
+def unfollow(request,param):
+	if request.user.is_authenticated():
+		followuser = usersinfo.objects.get(loginid = param)
+		curruser = usersinfo.objects.get(loginid = request.user.email)
+		if curruser.status == 0:
+			return redirect('/update')
+		try:
+			findfollow = follows.objects.get(uid= curruser.uid, fid = followuser.uid)
+			findfollow.delete()
+		except:
+			pass
+		return redirect('/viewuser/'+str(param))
+	else:
+		return redirect('/')
+
+
 def viewuser(request,param):
 	if request.user.is_authenticated():
 		curruser = usersinfo.objects.get(loginid = request.user.email)
@@ -129,7 +162,26 @@ def viewuser(request,param):
 		try:
 			newuser = usersinfo.objects.get(loginid = param)
 			allposts = posts.objects.filter(uid = newuser.uid)
-			return render(request, 'viewuser.html',{'newuser':newuser, 'allposts':allposts, 'count':len(allposts)})
+			commentdict = {}
+
+			for i in allposts:
+				commentdict[i.pid] = comments.objects.filter(pid = i.pid)
+			
+			commentform = comment_form
+			allposts = allposts[::-1]
+
+			postform = post_form()
+			commentform = comment_form
+
+			followstatus = 0
+
+			try:
+				findfollow = follows.objects.get(uid = curruser.uid, fid = newuser.uid)
+				followstatus = 1
+			except:
+				followstatus = 0
+			
+			return render(request, 'viewuser.html',{'newuser':newuser,'followstatus':followstatus, 'commentform':commentform,'commentdict':commentdict,'allposts':allposts, 'count':len(allposts)})
 		except:
 			return render(request, 'usernotfound.html')
 	else:

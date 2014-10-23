@@ -81,27 +81,55 @@
 								</div>
                                 <div class="panel-body">
                                   <p class="lead">{{ newuser.fname }}&nbsp{{ newuser.lname }}</p>
-                                  <p>45 Followers, {{count}} Posts</p>
-                                  
-                                  <p>
-                                   </p>
+                                      <p>45 Followers, {{count}} Posts</p>
+                                    </div>
+                            </div>
+                              {% if followstatus == 1 %}
+                             <div class = 'well'>
+                              <div class = 'row'>
+                                <div class = 'col-md-10'>
+                                  You are following {{ newuser.fname }}
+                                </div>
+                                <div class = 'col-md-2'>
+                                  <form method = 'link' action = '/unfollow/{{newuser.loginid}}' style = 'margin-left:-10px'>
+                                    <input type = 'submit' class = 'btn btn-sm btn-danger' value = 'Unfollow'>
+                                  </form>
                                 </div>
                               </div>
-                          
+                            </div>    
+                            {% elif followstatus == 0 %}                      
+                             <div class = 'well'>
+                              <div class = 'row'>
+                                <div class = 'col-md-10'>
+                                  You are not following {{ newuser.fname }}
+                                </div>
+                                <div class = 'col-md-2'>
+                                  <form method = 'link' action = '/follow/{{newuser.loginid}}'>
+                                    <input type = 'submit' class = 'btn btn-sm btn-success' value = 'Follow'>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>   
+                            {% endif %}                       
+
                           </div>
-                          
+
+
+
+
                           <!-- main col right -->
                           {% for post in allposts %}
                           <div class = 'col-sm-5'></div>
                           <div class="col-sm-7">
                                <div class="panel panel-default">
                                  <div class="panel-heading">
-                                 	<div class = 'row'>
-                                 		<div class = 'col-md-8'>
-                                 			<h4>{{post.title}}</h4>
-                                 		</div>
+                                  <div class = 'row'>
+                                    <div class = 'col-md-8'>
+                                      <h4>{{post.title}}</h4>
+                                    </div>
+                                    <div class = 'col-md-4'style = 'font-size:25px;'><a href = '/viewuser/{{post.loginid}}'>{{post.fname}}&nbsp{{post.lname}}</a></div>
 
-                                 	</div>
+                                  </div>
                                  </div>
                                   <div class="panel-body">
                                     <img src="//placehold.it/150x150" class="img-circle pull-right"> 
@@ -111,27 +139,62 @@
                                     <div class="clearfix">{{post.posttext}}</div>
                                     <hr>
                                     <div class = 'row'>
-                                    	<div class = 'col-md-6'>
-                                      		<button class = 'btn btn-success'>{{post.upcount}}</button>
-                                      		upvotes&nbsp&nbsp
-                                     		<button class = 'btn btn-danger'>{{post.downcount}}</button>
-                                     		downvotes
-                                     	</div>
-                                     	<div class = 'col-md-3'></div>
-                                     	<div class = 'col-md-3' style = 'font-size:20px;'></div>
+                                      <div class = 'col-md-6'>
+                                          <button class = 'btn btn-success btn-sm'>{{post.upcount}}</button>
+                                          upvotes&nbsp&nbsp
+                                        <button class = 'btn btn-danger btn-sm'>{{post.downcount}}</button>
+                                        downvotes
+                                      </div>
+                                      <div class = 'col-md-4'></div>
+                                      <div class = 'col-md-2'>
+                                        <a href = '/viewpost/{{post.pid}}' class = 'btn btn-default btn-sm'>View Post</a>
+                                      </div>
 
                                      </div>
 
                                     <hr>
-                                    <form>
-                                    <div class="input-group">
-                                      <div class="input-group-btn">
-                                      <button class="btn btn-success">+1</button><button class="btn btn-danger">-1</button>
+
+                                    <form method = 'POST' action = '/viewpost/{{post.pid}}'>
+                                      {% csrf_token %}
+                                    <div class="row">
+                                      <div class = 'col-md-10'>
+                                        {{ commentform | bootstrap }}
                                       </div>
-                                      <input type="text" class="form-control" placeholder="Add a comment..">
+                                      <div class = 'col-md-2'><br>
+                                        <input type = 'submit' class = 'btn btn-md btn-success' value = 'Comment'>
+                                      </div>
                                     </div>
                                     </form>
                                     
+                                      
+                                {% for key,commentarray in commentdict.items %}
+                                  {% if key == post.pid %}
+                                    {% for comment in commentarray %}
+                                    <div class = 'well'>
+                                      <div class = 'row'>
+                                      <div class = 'col-md-9'>
+                                        {{ comment.commenttext}}
+
+                                      </div>
+                                      {% if comment.uid == user.uid %}
+                                      <div class = 'col-md-1'><b>you</b></div>
+                                      <div class = 'col-md-1'>
+                                        <form method = 'link' action = '/deletecomment/{{comment.cid}}'>
+                                          <button type = 'submit' class = 'btn  btn-danger btn-xs'>Delete</button>
+                                        </form>
+                                      </div>
+                                      {% else %}
+                                      <div class= 'col-md-3' style = 'text-align:right'>
+                                        {{ post.fname}} {{post.lname}}
+
+                                      </div>
+                                      {% endif %}
+                                    </div>
+                                  </div>
+                                  {% endfor %}
+                                  {% endif %}
+                                  {% endfor %}
+
                                   </div>
                                </div>
                             
