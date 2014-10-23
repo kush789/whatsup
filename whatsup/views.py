@@ -44,7 +44,7 @@ def update(request):
 			form = userinfo_form(initial = {'loginid':curruser.loginid, 'fname':curruser.fname, 'lname': curruser.lname, 'number':curruser.number})
 			form.fields['loginid'].widget.attrs['readonly'] = True
 			try:
-				follow = follows(uid = curruser.uid, fid = curruser.uid)
+				follow = follows.objects.get(uid = curruser.uid, fid = curruser.uid)
 			except:
 				newfollow = follows(uid = curruser.uid, fid = curruser.uid)
 				newfollow.save()
@@ -77,19 +77,27 @@ def home(request):
 				pass
 			newpost.save()
 		mastercomment = {}
-		allposts = posts.objects.all()
+		allpos = posts.objects.all()
 
-		for i in allposts:
+		for i in allpos:
 			mastercomment[i.pid] = comments.objects.filter(pid = i.pid)
 		commentform = comment_form
 
 		curruserposts = posts.objects.filter(uid = curruser.uid)
 		count = len(curruserposts)
-		allposts = posts.objects.all()
+
+		allfollowers = follows.objects.filter(fid = curruser.uid)
+		allfollowing = follows.objects.filter(uid = curruser.uid)
+		allfollow = follows.objects.filter(uid = curruser.uid)
+		postbigarr = []
+		allposts = []
+		for following  in allfollow:
+			for followpost in posts.objects.filter(uid = following.fid):
+				allposts.append(followpost)
 		allposts = allposts[::-1]
 		postform = post_form()
 		commentform = comment_form
-		return render(request, 'home.html', {'count':count,'mastercomment':mastercomment,'commentform':commentform,'postform':postform, 'user':curruser, 'allposts':allposts, 'path':MEDIA_ROOT})
+		return render(request, 'home.html', {'count':count,'followingcount':len(allfollowing)-1,'followcount':len(allfollowers)-1,'mastercomment':mastercomment,'commentform':commentform,'postform':postform, 'user':curruser, 'allposts':allposts, 'path':MEDIA_ROOT})
 	else:
 		return render(request, 'index.html',{'str':'You must log in first'})
 
@@ -101,13 +109,15 @@ def discover(request):
 		currpost = posts.objects.filter(uid = curruser.uid)
 		allposts = posts.objects.all()
 
+		allposts = allposts[::-1]
+
 		commentdict = {}
 
 		for post in allposts:
 			commentdict[post.pid] = comments.objects.filter(pid = post.pid)
 
 		commentform = comment_form
-		return render(request, 'discover.html', {'allposts':allposts,'commentdict':commentdict,'count':len(currpost),'commentform':commentform})
+		return render(request, 'discover.html', {'allposts':allposts,'curruser':curruser,'commentdict':commentdict,'count':len(currpost),'commentform':commentform})
 		
 	else:
 		return redirect('/')
@@ -172,7 +182,6 @@ def viewuser(request,param):
 
 			postform = post_form()
 			commentform = comment_form
-
 			followstatus = 0
 
 			try:
@@ -180,8 +189,10 @@ def viewuser(request,param):
 				followstatus = 1
 			except:
 				followstatus = 0
-			
-			return render(request, 'viewuser.html',{'newuser':newuser,'followstatus':followstatus, 'commentform':commentform,'commentdict':commentdict,'allposts':allposts, 'count':len(allposts)})
+
+			allfollowers = follows.objects.filter(fid = newuser.uid)
+			allfollowing = follows.objects.filter(uid = newuser.uid)
+			return render(request, 'viewuser.html',{'newuser':newuser,'followingcount':len(allfollowing)-1,'followcount':len(allfollowers)-1,'followstatus':followstatus, 'commentform':commentform,'commentdict':commentdict,'allposts':allposts, 'count':len(allposts)})
 		except:
 			return render(request, 'usernotfound.html')
 	else:
@@ -263,3 +274,5 @@ def myposts(request):
 
 	else:
 		return redirect('/')
+
+

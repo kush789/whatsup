@@ -81,7 +81,7 @@
 								</div>
                                 <div class="panel-body">
                                   <p class="lead">{{ user.fname }}</p>
-                                  <p>45 Followers, {{count}} Posts</p>
+                                  <p>{{followcount}} Followers, Following {{followingcount}} users, {{count}} Posts</p>
                                   
                                   <p>
                                    </p>
@@ -172,7 +172,7 @@
                                     </div>
                                     </form>
                                     
-                                      
+
                                 {% for key,commentdict in mastercomment.items %}
                                   {% if key == post.pid %}
                                     {% for comment in commentdict %}

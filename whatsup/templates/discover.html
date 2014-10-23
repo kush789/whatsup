@@ -83,7 +83,7 @@
                                     <div class = 'col-md-8'>
                                       <h4>{{post.title}}</h4>
                                     </div>
-                                    <div class = 'col-md-4' style = 'font-size:25px;'>{{post.fname}}&nbsp{{post.lname}}
+                                    <div class = 'col-md-4' style = 'font-size:25px;'><a href = '/viewuser/{{post.loginid}}'>{{post.fname}}&nbsp{{post.lname}}</a>
                                     </div>
                                   </div>
                                   </div>
@@ -101,8 +101,11 @@
                                         <button class = 'btn btn-danger btn-md'>{{post.downcount}}</button>
                                         downvotes
                                       </div>
-                                      <div class = 'col-md-4'></div>
-                                      {% if curruser.uid == postuser.uid %}
+                                      <div class = 'col-md-2'></div>
+                                     <div class = 'col-md-2'>
+                                        <a href = '/viewpost/{{post.pid}}' class = 'btn btn-default btn-md'>View Post</a>
+                                      </div>
+                                      {% if curruser.uid == post.uid %}
                                       <div class = 'col-md-2'>
                                         <a href = '/deletepost/{{post.pid}}' class = 'btn btn-danger btn-md'>Delete Post</a>
                                       </div>
