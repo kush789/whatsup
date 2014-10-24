@@ -43,3 +43,15 @@ class follows(models.Model):
 	uid = models.IntegerField(max_length = 25)
 	fid = models.IntegerField(max_length = 25)
 
+class postvotes(models.Model):
+	vid = models.AutoField(primary_key = True)
+	uid = models.IntegerField(max_length = 15)
+	pid = models.IntegerField(max_length = 15)
+	value = models.IntegerField(max_length = 15)
+
+class commentvotes(models.Model):
+	vid = models.AutoField(primary_key = True)
+	uid = models.IntegerField(max_length = 15)
+	cid = models.IntegerField(max_length = 15)
+	value = models.IntegerField(max_length = 15)
+
