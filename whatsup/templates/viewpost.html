@@ -99,13 +99,13 @@
                                       <div class = 'col-md-3'>
                                         <form method = 'link' action = '/upvotepost/{{post.pid}}'>
                                           <input type = 'submit' class = 'btn btn-success btn-md' value = '{{post.upcount}}'>
-                                          upvotes&nbsp&nbsp
+                                          upvote
                                         </form>
                                         </div>
                                         <div class = 'col-md-3'>
-                                        <form>
-                                          <button class = 'btn btn-danger btn-md'>{{post.downcount}}</button>
-                                        downvotes
+                                        <form method = 'link' action = '/downvotepost/{{post.pid}}'>
+                                          <input type = 'submit' class = 'btn btn-danger btn-md' value = '{{post.downcount}}'>
+                                        downvote
                                         </form>
                                       </div>
                                       <div class = 'col-md-4'></div>

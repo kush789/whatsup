@@ -35,6 +35,7 @@ urlpatterns = patterns('',
 
     url(r'^viewpost/(?P<param>.+)', viewpost),
     url(r'^upvotepost/(?P<param>.+)', upvotepost),
+    url(r'^downvotepost/(?P<param>.+)', downvotepost),
     url(r'^viewuser/(?P<param>.+)', viewuser),
     url(r'^deletepost/(?P<param>.+)', deletepost),
     url(r'^deletecomment/(?P<param>.+)', deletecomment),

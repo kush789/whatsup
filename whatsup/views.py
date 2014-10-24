@@ -200,7 +200,6 @@ def viewuser(request,param):
 
 def upvotepost(request,param):
 	if request.user.is_authenticated():
-		print "param is ",param
 		curruser = usersinfo.objects.get(loginid = request.user.email)
 		currpost = posts.objects.get(pid = param)
 		if curruser.status == 0:
@@ -218,6 +217,32 @@ def upvotepost(request,param):
 		except:
 			vote = postvotes(uid = curruser.uid, pid = param, value = int(1))
 			currpost.upcount +=1
+			vote.save()
+			currpost.save()
+		return redirect('/viewpost/'+str(param))
+
+	else:
+		return redirect('/')
+
+def downvotepost(request,param):
+	if request.user.is_authenticated():
+		curruser = usersinfo.objects.get(loginid = request.user.email)
+		currpost = posts.objects.get(pid = param)
+		if curruser.status == 0:
+			return redirect('/update')
+		try:
+			vote = postvotes.objects.get(uid = curruser.uid, pid = param)
+			if vote.value == 1:
+				currpost.downcount +=1
+				currpost.upcount -=1
+			elif vote.value == -1:
+				pass
+			vote.value = -1
+			vote.save()
+			currpost.save()
+		except:
+			vote = postvotes(uid = curruser.uid, pid = param, value = int(-1))
+			currpost.downcount +=1
 			vote.save()
 			currpost.save()
 		return redirect('/viewpost/'+str(param))
