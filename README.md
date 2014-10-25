@@ -15,3 +15,9 @@ Find all posts here
 ================================================================
 
 The application uses mysql. Make sure you have it installed before running. Create a database "whatsup" .
+
+  pip install mysql-python
+
+Also, needs django bootstrap forms
+
+  pip install django-bootstrap-form
