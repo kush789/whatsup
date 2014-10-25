@@ -11,6 +11,7 @@ class usersinfo(models.Model):
 	fname = models.CharField(default = "", max_length = 30)
 	lname = models.CharField(default = "", max_length = 30)
 	number = models.IntegerField(max_length = 20)
+	userimage = models.ImageField(upload_to="userimg/")
 
 
 class posts(models.Model):

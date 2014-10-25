@@ -93,21 +93,96 @@
                                     {% endif %}
                                    <div class="clearfix">{{post.posttext}}</div>
                                     <hr>
-                                   <div class = 'row'>
-                                      <div class = 'col-md-6'>
-                                          <button class = 'btn btn-success btn-md'>{{post.upcount}}</button>
-                                          upvotes&nbsp&nbsp
-                                        <button class = 'btn btn-danger btn-md'>{{post.downcount}}</button>
-                                        downvotes
+                                   {% for index, value in votevalue.items %}
+                                    {% if index == post.pid %}
+                                     {% if value == 1%}
+                                   <div class = 'row'>1
+                                      <div class = 'col-md-2'>  
+                                        <form method = 'link' action = '/upvotepost/{{post.pid}}'>
+                                          <input type = 'submit' class = 'btn btn-success btn-md' value = '{{post.upcount}}'>
+                                          up
+                                        </form>
+                                        </div>
+                                        <div class = 'col-md-3'>
+                                        <form method = 'link' action = '/downvotepost/{{post.pid}}'>
+                                          <input type = 'submit' class = 'btn btn-default btn-md' value = '{{post.downcount}}'>
+                                        down
+                                        </form>
                                       </div>
                                       <div class = 'col-md-2'></div>
                                       <div class = 'col-md-2'>
-                                        <a href = '/viewpost/{{post.pid}}' class = 'btn btn-default btn-md'>View Post</a>
+                                        <form method = 'link' action = '/viewpost/{{post.pid}}'>
+                                          <input type = 'submit' class = 'btn btn-sm btn-default' value = "View Post">
+                                        </form>
                                       </div>
-                                       <div class = 'col-md-2'>
-                                        <a href = '/deletepost/{{post.pid}}' class = 'btn btn-danger btn-md'>Delete Post</a>
+                                      {% if curruser.uid == post.uid %}
+                                      <div class = 'col-md-2'>
+                                       <form method = 'link' action = '/deletepost/{{post.pid}}'>
+                                          <input type = 'submit' class = 'btn btn-danger btn-sm' value = 'Delete Post'>
+                                        </form>
                                       </div>
+                                      {% endif %}
                                     </div>
+                                    {% elif value == -1 %}
+                                  <div class = 'row'>
+                                      <div class = 'col-md-2'>  
+                                        <form method = 'link' action = '/upvotepost/{{post.pid}}'>
+                                          <input type = 'submit' class = 'btn btn-default btn-md' value = '{{post.upcount}}'>
+                                          up
+                                        </form>
+                                        </div>
+                                        <div class = 'col-md-3'>
+                                        <form method = 'link' action = '/downvotepost/{{post.pid}}'>
+                                          <input type = 'submit' class = 'btn btn-danger btn-md' value = '{{post.downcount}}'>
+                                        down
+                                        </form>
+                                      </div>
+                                    <div class = 'col-md-2'></div>
+                                      <div class = 'col-md-2'>
+                                        <form method = 'link' action = '/viewpost/{{post.pid}}'>
+                                          <input type = 'submit' class = 'btn btn-sm btn-default' value = "View Post">
+                                        </form>
+                                      </div>
+                                      {% if curruser.uid == post.uid %}
+                                      <div class = 'col-md-2'>
+                                        <form method = 'link' action = '/deletepost/{{post.pid}}'>
+                                          <input type = 'submit' class = 'btn btn-danger btn-sm' value = 'Delete Post'>
+                                        </form>
+                                      </div>
+                                      {% endif %}
+                                    </div>
+                                   {% elif value == 0 %}
+                                  <div class = 'row'>
+                                      <div class = 'col-md-2'>  
+                                        <form method = 'link' action = '/upvotepost/{{post.pid}}'>
+                                          <input type = 'submit' class = 'btn btn-default btn-md' value = '{{post.upcount}}'>
+                                          up
+                                        </form>
+                                        </div>
+                                        <div class = 'col-md-3'>
+                                        <form method = 'link' action = '/downvotepost/{{post.pid}}'>
+                                          <input type = 'submit' class = 'btn btn-default btn-md' value = '{{post.downcount}}'>
+                                        down
+                                        </form>
+                                      </div>
+                                    <div class = 'col-md-2'></div>
+                                      <div class = 'col-md-2'>
+                                        <form method = 'link' action = '/viewpost/{{post.pid}}'>
+                                          <input type = 'submit' class = 'btn btn-sm btn-default' value = "View Post">
+                                        </form>
+                                      </div>
+                                      {% if curruser.uid == post.uid %}
+                                      <div class = 'col-md-2'>
+                                        <form method = 'link' action = '/deletepost/{{post.pid}}'>
+                                          <input type = 'submit' class = 'btn btn-danger btn-sm' value = 'Delete Post'>
+                                        </form>
+                                      </div>
+                                      {% endif %}
+                                    </div>
+                                    {% endif %}
+                                    {% endif %}
+                                    {% endfor %}
+
                                     <hr>
 
                                     <form method = 'POST' action = '/viewpost/{{post.pid}}'>

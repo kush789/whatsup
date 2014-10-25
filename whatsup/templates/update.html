@@ -58,7 +58,7 @@
 
                 <div class='panel-body'>
 				
-				<form method = 'POST' action='/update'>
+				<form method = 'POST' role="form" enctype= 'multipart/form-data' action='/update' >
 					{% csrf_token %}
 					{{ form | bootstrap }}
 					<input type = 'submit' class = 'btn btn-lg btn-success' value = 'update'>

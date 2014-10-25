@@ -6,7 +6,7 @@ from django.contrib.auth import logout as auth_logout
 from whats.models import *
 from whatsup.forms import *
 from whatsup.settings import MEDIA_ROOT, STATIC_URL, ROOT_PATH, BASE_DIR
-from os import remove
+from os import remove, rename
 
 def index(request):
 	if request.user.is_authenticated():
@@ -37,6 +37,11 @@ def update(request):
 			curruser.lname = request.POST['lname']
 			curruser.number = request.POST['number']
 			curruser.status = 1
+			try:
+				curruser.userimage = request.FILES['userimage']
+				save_userimage(request.FILES['userimage'],curruser.loginid)
+			except:
+				pass
 			curruser.save()
 			return redirect('/home')
 
@@ -58,6 +63,15 @@ def update(request):
 	else:
 		return render(request, 'index.html',{'str':'You must log in first'})
 
+def save_userimage(file, userloginid ,path = 'userimg'):
+	filename = file._get_name()
+
+	fd = open('%s/%s/%s' % (MEDIA_ROOT, str(path),str(userloginid)), 'w')
+	print MEDIA_ROOT+str(path)+str(userloginid)
+	for chunk in file.chunks():
+		fd.write(chunk)
+	fd.close()
+
 def home(request):
 	if request.user.is_authenticated():
 		try:
@@ -73,7 +87,7 @@ def home(request):
 			newpost = posts(loginid = request.user.email, title = request.POST['posttitle'],posttext = request.POST['posttext'], uid = curruser.uid, fname = curruser.fname,lname = curruser.lname )
 			try:
 				newpost.postimage = request.FILES['postimage']
-				save_image(request.FILES['postimage'])
+				save_postimage(request.FILES['postimage'])
 			except:
 				pass
 			newpost.save()
@@ -105,16 +119,15 @@ def home(request):
 				votevalue[post.pid] = vote.value
 			except:
 				votevalue[post.pid] = 0
-			print votevalue[post.pid]
-
 
 		postform = post_form()
 		commentform = comment_form
-		return render(request, 'home.html', {'count':count,'votevalue':votevalue,'followingcount':len(allfollowing)-1,'followcount':len(allfollowers)-1,'mastercomment':mastercomment,'commentform':commentform,'postform':postform, 'user':curruser, 'allposts':allposts, 'path':MEDIA_ROOT})
+		return render(request, 'home.html', {'count':count,'votevalue':votevalue,'followingcount':len(allfollowing)-1,'followcount':len(allfollowers)-1,'mastercomment':mastercomment,'commentform':commentform,'postform':postform, 'curruser':curruser, 'allposts':allposts, 'path':MEDIA_ROOT})
 	else:
 		return render(request, 'index.html',{'str':'You must log in first'})
 
-def save_image(file, path = 'postimg'):
+
+def save_postimage(file, path = 'postimg'):
 	filename = file._get_name()
 	fd = open('%s/%s/%s' % (MEDIA_ROOT, str(path),str(filename)), 'w')
 	for chunk in file.chunks():
@@ -132,12 +145,20 @@ def discover(request):
 		allposts = allposts[::-1]
 
 		commentdict = {}
+		votevalue = {}
+
+		for post in allposts:
+			try:
+				vote = postvotes.objects.get(pid = post.pid)
+				votevalue[post.pid] = vote.value
+			except:
+				votevalue[post.pid] = 0
 
 		for post in allposts:
 			commentdict[post.pid] = comments.objects.filter(pid = post.pid)
 
 		commentform = comment_form
-		return render(request, 'discover.html', {'allposts':allposts,'curruser':curruser,'commentdict':commentdict,'count':len(currpost),'commentform':commentform})
+		return render(request, 'discover.html', {'allposts':allposts,'votevalue':votevalue,'curruser':curruser,'commentdict':commentdict,'count':len(currpost),'commentform':commentform})
 		
 	else:
 		return redirect('/')
@@ -195,6 +216,15 @@ def viewuser(request,param):
 			commentform = comment_form
 			followstatus = 0
 
+			votevalue = {}
+
+			for post in allposts:
+				try:
+					vote = postvotes.objects.get(pid = post.pid)
+					votevalue[post.pid] = vote.value
+				except:
+					votevalue[post.pid] = 0
+
 			try:
 				findfollow = follows.objects.get(uid = curruser.uid, fid = newuser.uid)
 				followstatus = 1
@@ -203,7 +233,7 @@ def viewuser(request,param):
 
 			allfollowers = follows.objects.filter(fid = newuser.uid)
 			allfollowing = follows.objects.filter(uid = newuser.uid)
-			return render(request, 'viewuser.html',{'newuser':newuser,'followingcount':len(allfollowing)-1,'followcount':len(allfollowers)-1,'followstatus':followstatus, 'commentform':commentform,'commentdict':commentdict,'allposts':allposts, 'count':len(allposts)})
+			return render(request, 'viewuser.html',{'newuser':newuser,'votevalue':votevalue,'followingcount':len(allfollowing)-1,'followcount':len(allfollowers)-1,'followstatus':followstatus, 'commentform':commentform,'commentdict':commentdict,'allposts':allposts, 'count':len(allposts)})
 		except:
 			return render(request, 'usernotfound.html')
 	else:
@@ -294,7 +324,8 @@ def deletepost(request,param):
 			return redirect('/update')
 		post = posts.objects.get(pid = param)
 		if post.uid == curruser.uid:
-			remove(MEDIA_ROOT+str(post.postimage.url)[6:])
+			if(post.postimage):
+				remove(MEDIA_ROOT+str(post.postimage.url)[6:])
 			post.delete()
 		return redirect('/myposts')
 	else:
@@ -338,8 +369,16 @@ def myposts(request):
 		for i in allposts:
 			mastercomment[i.pid] = comments.objects.filter(pid = i.pid)
 		commentform = comment_form
+		votevalue = {}
 
-		return render(request, 'myposts.html', {'count' : len(allposts),'commentform':commentform,'curruser':curruser,'allposts':allposts,'mastercomment':mastercomment})
+		for post in allposts:
+			try:
+				vote = postvotes.objects.get(pid = post.pid)
+				votevalue[post.pid] = vote.value
+			except:
+				votevalue[post.pid] = 0
+
+		return render(request, 'myposts.html', {'count' : len(allposts),'votevalue':votevalue,'commentform':commentform,'curruser':curruser,'allposts':allposts,'mastercomment':mastercomment})
 
 	else:
 		return redirect('/')

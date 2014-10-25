@@ -9,10 +9,11 @@ class userinfo_form(forms.ModelForm):
 	fname = forms.CharField(required = True, widget = forms.TextInput)
 	lname = forms.CharField(required = True, widget = forms.TextInput)
 	number = forms.IntegerField(required = True, widget = forms.TextInput)
+	userimage = forms.FileField(required = False, label = 'Upload Profile Image')
 
 	class Meta:
 		model = usersinfo
-		fields = ('loginid','fname','lname','number')
+		fields = ('loginid','fname','lname','number','userimage')
 
 
 class post_form(forms.ModelForm):
