@@ -138,9 +138,8 @@
                                  	</div>
                                  </div>
                                   <div class="panel-body">
-                                    <img src="//placehold.it/150x150" class="img-circle pull-right"> 
                                     {% if post.postimage %}
-                                    <div class="clearfix"><img src = '{{path}}{{post.postimage.url}}'></div>
+                                    <div class="clearfix"><img src = '{{post.postimage.url}}' style = 'max-height:100%;max-width:100%;'></div><hr>
                                     {% endif %}
                                     <div class="clearfix">{{post.posttext}}</div>
                                     <hr>
@@ -151,7 +150,13 @@
                                      		<button class = 'btn btn-danger btn-sm'>{{post.downcount}}</button>
                                      		downvotes
                                      	</div>
-                                     	<div class = 'col-md-4'></div>
+                                     	<div class = 'col-md-2'></div>
+                                     {% if curruser.uid == postuser.uid %}
+                                      <div class = 'col-md-2'>
+                                        <a href = '/deletepost/{{post.pid}}' class = 'btn btn-danger btn-sm'>Delete Post</a>
+                                      </div>
+                                      {% endif %}
+
                                      	<div class = 'col-md-2'>
                                         <a href = '/viewpost/{{post.pid}}' class = 'btn btn-default btn-sm'>View Post</a>
                                       </div>

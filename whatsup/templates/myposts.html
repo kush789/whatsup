@@ -88,11 +88,10 @@
                                   </div>
                                   </div>
                                   <div class="panel-body">
-                                    <img src="//placehold.it/150x150" class="img-circle pull-right"> 
                                     {% if post.postimage %}
-                                    <div class="clearfix"><img src = '{{path}}{{post.postimage.url}}'></div>
+                                    <div class="clearfix"><img src = '{{post.postimage.url}}' style = 'max-height:100%;max-width:100%;'></div><hr>
                                     {% endif %}
-                                    <div class="clearfix">{{post.posttext}}</div>
+                                   <div class="clearfix">{{post.posttext}}</div>
                                     <hr>
                                    <div class = 'row'>
                                       <div class = 'col-md-6'>

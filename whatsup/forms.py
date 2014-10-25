@@ -30,5 +30,3 @@ class comment_form(forms.ModelForm):
 	class Meta:
 		model = comments
 		fields = ('commenttext',)
-#		model = comments
-#		fields = ('commenttext')

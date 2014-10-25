@@ -6,6 +6,7 @@ from django.contrib.auth import logout as auth_logout
 from whats.models import *
 from whatsup.forms import *
 from whatsup.settings import MEDIA_ROOT, STATIC_URL, ROOT_PATH, BASE_DIR
+from os import remove
 
 def index(request):
 	if request.user.is_authenticated():
@@ -101,6 +102,13 @@ def home(request):
 	else:
 		return render(request, 'index.html',{'str':'You must log in first'})
 
+def save_image(file, path = 'postimg'):
+	filename = file._get_name()
+	fd = open('%s/%s/%s' % (MEDIA_ROOT, str(path),str(filename)), 'w')
+	for chunk in file.chunks():
+		fd.write(chunk)
+	fd.close()
+
 def discover(request):
 	if request.user.is_authenticated():
 		curruser = usersinfo.objects.get(loginid = request.user.email)
@@ -121,15 +129,6 @@ def discover(request):
 		
 	else:
 		return redirect('/')
-
-
-
-def save_image(file, path = ''):
-	filename = file._get_name()
-	fd = open('%s/%s' % (MEDIA_ROOT, str(path)+str(filename)), 'w')
-	for chunk in file.chunks():
-		fd.write(chunk)
-	fd.close()
 
 def follow(request,param):
 	if request.user.is_authenticated():
@@ -265,8 +264,12 @@ def viewpost(request,param):
 				newcomment.save()
 			allcomments = comments.objects.filter(pid = param)
 			commentform = comment_form
-
-			return render(request, 'viewpost.html', {'post':currpost,'allcomments':allcomments,'postuser':postuser,'curruser':curruser, 'commentform':commentform})
+			try:
+				vote = postvotes.objects.get(pid = param, uid = curruser.uid)
+				votevalue = vote.value
+			except:
+				votevalue = 0
+			return render(request, 'viewpost.html', {'post':currpost,'votevalue':votevalue,'allcomments':allcomments,'postuser':postuser,'curruser':curruser, 'commentform':commentform})
 		except:
 			return render(request, 'postnotfound.html')
 	else:
@@ -279,6 +282,7 @@ def deletepost(request,param):
 			return redirect('/update')
 		post = posts.objects.get(pid = param)
 		if post.uid == curruser.uid:
+			remove('/Users/kushagra/Desktop/codes/Dev/whatsup/whats/'+str(post.postimage.url))
 			post.delete()
 		return redirect('/myposts')
 	else:
