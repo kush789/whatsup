@@ -115,7 +115,7 @@
                                           <input type = 'submit' class = 'btn btn-sm btn-default' value = "View Post">
                                         </form>
                                       </div>
-                                      {% if curruser.uid == postuser.uid %}
+                                      {% if curruser.uid == post.uid %}
                                       <div class = 'col-md-2'>
                                        <form method = 'link' action = '/deletepost/{{post.pid}}'>
                                           <input type = 'submit' class = 'btn btn-danger btn-sm' value = 'Delete Post'>
@@ -143,7 +143,7 @@
                                           <input type = 'submit' class = 'btn btn-sm btn-default' value = "View Post">
                                         </form>
                                       </div>
-                                      {% if curruser.uid == postuser.uid %}
+                                      {% if curruser.uid == post.uid %}
                                       <div class = 'col-md-2'>
                                         <form method = 'link' action = '/deletepost/{{post.pid}}'>
                                           <input type = 'submit' class = 'btn btn-danger btn-sm' value = 'Delete Post'>
@@ -171,7 +171,7 @@
                                           <input type = 'submit' class = 'btn btn-sm btn-default' value = "View Post">
                                         </form>
                                       </div>
-                                      {% if curruser.uid == postuser.uid %}
+                                      {% if curruser.uid == post.uid %}
                                       <div class = 'col-md-2'>
                                         <form method = 'link' action = '/deletepost/{{post.pid}}'>
                                           <input type = 'submit' class = 'btn btn-danger btn-sm' value = 'Delete Post'>
