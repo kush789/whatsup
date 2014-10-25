@@ -85,7 +85,7 @@ def home(request):
 		commentform = comment_form
 
 		curruserposts = posts.objects.filter(uid = curruser.uid)
-		count = len(curruserposts)
+		count = len(curruserposts)		
 
 		allfollowers = follows.objects.filter(fid = curruser.uid)
 		allfollowing = follows.objects.filter(uid = curruser.uid)
@@ -96,9 +96,21 @@ def home(request):
 			for followpost in posts.objects.filter(uid = following.fid):
 				allposts.append(followpost)
 		allposts = allposts[::-1]
+
+		votevalue = {}
+
+		for post in allposts:
+			try:
+				vote = postvotes.objects.get(pid = post.pid)
+				votevalue[post.pid] = vote.value
+			except:
+				votevalue[post.pid] = 0
+			print votevalue[post.pid]
+
+
 		postform = post_form()
 		commentform = comment_form
-		return render(request, 'home.html', {'count':count,'followingcount':len(allfollowing)-1,'followcount':len(allfollowers)-1,'mastercomment':mastercomment,'commentform':commentform,'postform':postform, 'user':curruser, 'allposts':allposts, 'path':MEDIA_ROOT})
+		return render(request, 'home.html', {'count':count,'votevalue':votevalue,'followingcount':len(allfollowing)-1,'followcount':len(allfollowers)-1,'mastercomment':mastercomment,'commentform':commentform,'postform':postform, 'user':curruser, 'allposts':allposts, 'path':MEDIA_ROOT})
 	else:
 		return render(request, 'index.html',{'str':'You must log in first'})
 
