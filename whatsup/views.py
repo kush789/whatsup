@@ -294,7 +294,7 @@ def deletepost(request,param):
 			return redirect('/update')
 		post = posts.objects.get(pid = param)
 		if post.uid == curruser.uid:
-			remove('/Users/kushagra/Desktop/codes/Dev/whatsup/whats/'+str(post.postimage.url))
+			remove(MEDIA_ROOT+str(post.postimage.url)[6:])
 			post.delete()
 		return redirect('/myposts')
 	else:
