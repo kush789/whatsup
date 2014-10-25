@@ -101,8 +101,16 @@ def home(request):
 		curruserposts = posts.objects.filter(uid = curruser.uid)
 		count = len(curruserposts)		
 
-		allfollowers = follows.objects.filter(fid = curruser.uid)
-		allfollowing = follows.objects.filter(uid = curruser.uid)
+		allfollowers = follows.objects.filter(fid = curruser.uid)	#all following curruser
+		allfollowing = follows.objects.filter(uid = curruser.uid)	#all curruser is following
+
+		followlist = []
+		for follower in allfollowers:
+			if follower.uid == curruser.uid:
+				pass
+			else:
+				followlist.append(usersinfo.objects.get(uid = follower.uid))
+
 		allfollow = follows.objects.filter(uid = curruser.uid)
 		postbigarr = []
 		allposts = []
@@ -122,7 +130,7 @@ def home(request):
 
 		postform = post_form()
 		commentform = comment_form
-		return render(request, 'home.html', {'count':count,'votevalue':votevalue,'followingcount':len(allfollowing)-1,'followcount':len(allfollowers)-1,'mastercomment':mastercomment,'commentform':commentform,'postform':postform, 'curruser':curruser, 'allposts':allposts, 'path':MEDIA_ROOT})
+		return render(request, 'home.html', {'count':count,'votevalue':votevalue,'allfollowers':followlist,'allfollowing':allfollowing,'followingcount':len(allfollowing)-1,'followcount':len(allfollowers)-1,'mastercomment':mastercomment,'commentform':commentform,'postform':postform, 'curruser':curruser, 'allposts':allposts, 'path':MEDIA_ROOT})
 	else:
 		return render(request, 'index.html',{'str':'You must log in first'})
 

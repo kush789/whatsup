@@ -29,7 +29,6 @@
                     <li ><a href="/home"><i class="fa fa-home"></i>&nbspHome</a></li>
                     <li><a href="/discover"><i class="fa fa-line-chart"></i> &nbsp&nbspDiscover </a></li>
                     <li><a href="/myposts"><i class="fa fa-user"></i> &nbspMy Posts </a></li>
-                    <li><a href="/home"><i class="fa fa-refresh"></i> &nbspRefresh </a></li>
                 </ul>
                          
             </div>
@@ -116,12 +115,21 @@
 
 
                               <div class="panel panel-default">
-                                 <div class="panel-heading"><h4>View Friends</h4></div>
+                                 <div class="panel-heading"><h4>View Followers</h4></div>
                                   <div class="panel-body">
   
                                     <div class="clearfix"></div>
 
-                                    {{ friends }}
+                                    {% for follower in allfollowers %}
+                                      <div class = 'row'>
+                                        <div class = 'col-md-3'>
+                                          <img src = '{{follower.userimage.url}}' style = 'max-height:100%; max-width:100%'>
+                                        </div>
+                                        <div class = 'col-md-9' style = 'vertical-align:center'>
+                                          <a href = '/viewuser/{{follower.loginid}}' >{{follower.fname}} {{follower.lname}}</a>
+                                        </div>
+                                      </div>
+                                    {% endfor %}
                                     </div>
                               </div>
                            
