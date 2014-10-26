@@ -159,6 +159,20 @@
                                     </div>
                                     {% endif %}
                                     <hr>
+
+                                    <form method = 'POST' action = '/addcomment/{{post.pid}}'>
+                                      {% csrf_token %}
+                                    <div class="row">
+                                      <div class = 'col-md-9'>
+                                        {{ commentform | bootstrap }}
+                                      </div>
+                                      <div class = 'col-md-2'><br>
+                                        <input type = 'submit' class = 'btn btn-md btn-success' value = 'Comment'>
+                                      </div>
+                                      <div class = 'col-md-1'></div>
+                                    </div>
+                                    </form>
+                                    
                                     {% for comment in allcomments %}
                                     <div class = 'well'>
                                       <div class = 'row'>
@@ -180,17 +194,6 @@
                                     </div>
                                   </div>
                                     {% endfor %}
-                                    <form method = 'POST' action = '/viewpost/{{post.pid}}'>
-                                      {% csrf_token %}
-                                    <div class="row">
-                                      <div class = 'col-md-10'>
-                                        {{ commentform | bootstrap }}
-                                      </div>
-                                      <div class = 'col-md-2'><br>
-                                        <input type = 'submit' class = 'btn btn-md btn-success' value = 'Comment'>
-                                      </div>
-                                    </div>
-                                    </form>
                                     
                                   </div>
                                </div>

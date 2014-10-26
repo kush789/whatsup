@@ -353,11 +353,13 @@ def deletecomment(request,param):
 
 
 def addcomment(request,param):
+	print "reached"
 	if request.user.is_authenticated():
 		curruser = usersinfo.objects.get(loginid = request.user.email)
 		if curruser.status == 0:
 			return redirect('/update')
 		if request.method == "POST":
+			print "newcom"
 			newcomment = comments(uid = curruser.uid, pid = param, fname = curruser.fname, lname = curruser.lname, loginid = curruser.loginid, commenttext = request.POST['commenttext'], upcount = 0, downcount = 0)
 			newcomment.save()
 		return redirect('/viewpost/'+str(param))

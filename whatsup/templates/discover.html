@@ -185,18 +185,18 @@
 
                                     <hr>
 
-                                    <form method = 'POST' action = '/viewpost/{{post.pid}}'>
+                                    <form method = 'POST' action = '/addcomment/{{post.pid}}'>
                                       {% csrf_token %}
                                     <div class="row">
-                                      <div class = 'col-md-10'>
+                                      <div class = 'col-md-9'>
                                         {{ commentform | bootstrap }}
                                       </div>
                                       <div class = 'col-md-2'><br>
                                         <input type = 'submit' class = 'btn btn-md btn-success' value = 'Comment'>
                                       </div>
+                                      <div class = 'col-md-1'></div>
                                     </div>
-                                    </form>
-                                    
+                                    </form>                                    
 
 
 
