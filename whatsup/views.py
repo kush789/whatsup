@@ -123,7 +123,7 @@ def home(request):
 
 		for post in allposts:
 			try:
-				vote = postvotes.objects.get(pid = post.pid)
+				vote = postvotes.objects.get(pid = post.pid,uid = curruser.uid)
 				votevalue[post.pid] = vote.value
 			except:
 				votevalue[post.pid] = 0
