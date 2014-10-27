@@ -76,14 +76,9 @@
                            
                               <div class="panel panel-default">
                                 <div class="panel-thumbnail">
-                                {% if curruser.userimage %}
                      			   <img src="{{curruser.userimage.url}}" style = 'border-radius:25px;' width="100px" height="100px">
 								            </div>
-                                {% else %}
-                             <img src="../../static/files/images/profilepic.jpg" style = 'border-radius:25px;' width="100px" height="100px">
-                            </div>
-                                {% endif %}
-                                <div class="panel-body">
+                             <div class="panel-body">
                                   <p class="lead">{{ curruser.fname }}</p>
                                   <p>{{followcount}} Followers, Following {{followingcount}} users, {{count}} Posts</p>
                                   
@@ -123,7 +118,11 @@
                                     {% for follower in allfollowers %}
                                       <div class = 'row'>
                                         <div class = 'col-md-3'>
+                                          {% if follower.userimage %}
                                           <img src = '{{follower.userimage.url}}' style = 'max-height:100%; max-width:100%'>
+                                          {% else %}
+                                          <img src = '{{follower.userimage.url}}'>
+                                          {% endif %}
                                         </div>
                                         <div class = 'col-md-9' style = 'vertical-align:center'>
                                           <a href = '/viewuser/{{follower.loginid}}' >{{follower.fname}} {{follower.lname}}</a>
@@ -143,15 +142,15 @@
                                <div class="panel panel-default">
                                  <div class="panel-heading">
                                  	<div class = 'row'>
-                                 		<div class = 'col-md-8'>
-                                 			<h4>{{post.title}}</h4>
-                                 		</div>
-                                 		<div class = 'col-md-4'style = 'font-size:25px;'><a href = '/viewuser/{{post.loginid}}'>{{post.fname}}&nbsp{{post.lname}}</a></div>
+                                 		<div class = 'col-md-12'style = 'font-size:25px;'><a href = '/viewuser/{{post.loginid}}'>{{post.fname}}&nbsp{{post.lname}}</a></div>
 
                                  	</div>
                                  </div>
                                   <div class="panel-body">
-                                    {% if post.postimage %}
+                                    <div class = 'row'>
+                                      <h2>{{post.title}}</h2><br><br>
+                                    </div>
+                                     {% if post.postimage %}
                                     <div class="clearfix"><img src = '{{post.postimage.url}}' style = 'max-height:100%;max-width:100%;'></div><hr>
                                     {% endif %}
                                     <div class="clearfix">{{post.posttext}}</div>

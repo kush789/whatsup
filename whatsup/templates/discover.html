@@ -80,14 +80,14 @@
                                <div class="panel panel-default">
                                  <div class="panel-heading">
                                   <div class = 'row'>
-                                    <div class = 'col-md-8'>
-                                      <h4>{{post.title}}</h4>
-                                    </div>
-                                    <div class = 'col-md-4' style = 'font-size:25px;'><a href = '/viewuser/{{post.loginid}}'>{{post.fname}}&nbsp{{post.lname}}</a>
+                                    <div class = 'col-md-12' style = 'font-size:25px;'><a href = '/viewuser/{{post.loginid}}'>{{post.fname}}&nbsp{{post.lname}}</a>
                                     </div>
                                   </div>
                                   </div>
                                   <div class="panel-body">
+                                    <div class = 'row'>
+                                      <h2>{{post.title}}</h2><br><br>
+                                    </div>
                                     {% if post.postimage %}
                                     <div class="clearfix"><img src = '{{post.postimage.url}}' style = 'max-height:100%;max-width:100%;'></div><hr>
                                     {% endif %}

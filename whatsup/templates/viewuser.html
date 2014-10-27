@@ -78,6 +78,7 @@
                               <div class="panel panel-default">
                                 <div class="panel-thumbnail">
                      			   <img src="/{{newuser.userimage.url}}" width="100px" height="100px" style = 'border-radius:25px'>
+
 								</div>
                                 <div class="panel-body">
                                   <p class="lead">{{ newuser.fname }}&nbsp{{ newuser.lname }}</p>
@@ -124,15 +125,15 @@
                                <div class="panel panel-default">
                                  <div class="panel-heading">
                                   <div class = 'row'>
-                                    <div class = 'col-md-8'>
-                                      <h4>{{post.title}}</h4>
-                                    </div>
-                                    <div class = 'col-md-4'style = 'font-size:25px;'><a href = '/viewuser/{{post.loginid}}'>{{post.fname}}&nbsp{{post.lname}}</a></div>
+                                   <div class = 'col-md-4'style = 'font-size:25px;'><a href = '/viewuser/{{post.loginid}}'>{{post.fname}}&nbsp{{post.lname}}</a></div>
 
                                   </div>
                                  </div>
                                   <div class="panel-body">
-                                    {% if post.postimage %}
+                                    <div class - 'row'>
+                                      <h2>{{post.title}}</h2><br><br>
+                                    </div>
+                                     {% if post.postimage %}
                                     <div class="clearfix"><img src = '/{{post.postimage.url}}' style = 'max-height:100%;max-width:100%;'></div><hr>
                                     {% endif %}
                                     <div class="clearfix">{{post.posttext}}</div>

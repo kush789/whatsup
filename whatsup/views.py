@@ -41,7 +41,10 @@ def update(request):
 				curruser.userimage = request.FILES['userimage']
 				save_userimage(request.FILES['userimage'],curruser.loginid)
 			except:
-				pass
+				if (curruser.userimage):
+					pass
+				else:
+					curruser.userimage = 'userimg/default.jpg'
 			curruser.save()
 			return redirect('/home')
 
@@ -130,6 +133,7 @@ def home(request):
 
 		postform = post_form()
 		commentform = comment_form
+		print curruser.userimage.url
 		return render(request, 'home.html', {'count':count,'votevalue':votevalue,'allfollowers':followlist,'allfollowing':allfollowing,'followingcount':len(allfollowing)-1,'followcount':len(allfollowers)-1,'mastercomment':mastercomment,'commentform':commentform,'postform':postform, 'curruser':curruser, 'allposts':allposts, 'path':MEDIA_ROOT})
 	else:
 		return render(request, 'index.html',{'str':'You must log in first'})
@@ -256,11 +260,15 @@ def upvotepost(request,param):
 		try:
 			vote = postvotes.objects.get(uid = curruser.uid, pid = param)
 			if vote.value == 1:
-				pass
+				vote.value = 0
+				currpost.upcount-=1
 			elif vote.value == -1:
 				currpost.downcount -=1
 				currpost.upcount +=1
-			vote.value = 1
+				vote.value = 1
+			elif vote.value == 0:
+				currpost.upcount+=1
+				vote.value = 1
 			vote.save()
 			currpost.save()
 		except:
@@ -282,11 +290,15 @@ def downvotepost(request,param):
 		try:
 			vote = postvotes.objects.get(uid = curruser.uid, pid = param)
 			if vote.value == 1:
+				vote.value = -1
 				currpost.downcount +=1
 				currpost.upcount -=1
 			elif vote.value == -1:
-				pass
-			vote.value = -1
+				vote.value = 0
+				currpost.downcount-=1
+			elif vote.value == 0:
+				vote.value = -1
+				currpost.downcount+=1
 			vote.save()
 			currpost.save()
 		except:
