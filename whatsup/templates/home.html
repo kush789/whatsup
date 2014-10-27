@@ -87,20 +87,42 @@
                                 </div>
                               </div>
 
+                              <div class="panel panel-default">
+                                 <div class="panel-heading">
 
-                           
-                              <div class="well"> 
-                                   <form class="form-horizontal" role="form" enctype= 'multipart/form-data' method = 'POST' action = '/home'>{% csrf_token %}
-                                    <h3>What is up?</h3>
-                                    <div class = 'row'>
-                                    	<div class = 'col-md-1'></div>
-                                    	<div class = 'col-md-10'>
-                                    		{{ postform | bootstrap }}
-                                    	</div>
+                                  <div class = 'row'>
+                                    <div class = 'col-md-9'>
+                                  <h5>The following people viewed your profile</h5>
+                                      </div>
+                                      <div class = 'col-md-3'>
+                                        <form method = 'link' action = '/dismissstalkalert/{{curruser.loginid}}'>
+                                          <input type = 'submit' class = 'btn btn-sm btn-danger' value = 'dismiss'>
+                                        </form>
+                                      </div>
+                                </div>
+
+
+
+                                 </div>
+                                  <div class="panel-body">
+  
+                                    <div class="clearfix"></div>
+
+                                    {% for stalker in stalkerlist %}
+                                      <div class = 'row'>
+                                        <div class = 'col-md-3'>
+                                          {% if stalker.userimage %}
+                                          <img src = '{{stalker.userimage.url}}' style = 'max-height:100%; max-width:100%'>
+                                          {% else %}
+                                          <img src = '{{stalker.userimage.url}}'>
+                                          {% endif %}
+                                        </div>
+                                        <div class = 'col-md-9' style = 'vertical-align:center'>
+                                          <a href = '/viewuser/{{follower.loginid}}' >{{stalker.fname}} {{stalker.lname}}</a>
+                                        </div>
+                                      </div>
+                                    {% endfor %}
                                     </div>
-                                    <input type = 'submit' class="btn btn-primary pull-right" value = 'upload'><br><br>
-
-                                  </form>
                               </div>
 
 
@@ -136,6 +158,27 @@
                           </div>
                           
                           <!-- main col right -->
+                          <div class = 'col-sm-5'></div>
+                          <div class = 'col-sm-7'>
+                           
+                              <div class="well"> 
+                                   <form class="form-horizontal" role="form" enctype= 'multipart/form-data' method = 'POST' action = '/home'>{% csrf_token %}
+                                    <h3>What is up?</h3>
+                                    <div class = 'row'>
+                                      <div class = 'col-md-1'></div>
+                                      <div class = 'col-md-10'>
+                                        {{ postform | bootstrap }}
+                                      </div>
+                                    </div>
+                                    <input type = 'submit' class="btn btn-primary pull-right" value = 'upload'><br><br>
+
+                                  </form>
+                              </div>
+
+
+
+
+                          </div>
                           {% for post in allposts %}
                           <div class = 'col-sm-5'></div>
                           <div class="col-sm-7">

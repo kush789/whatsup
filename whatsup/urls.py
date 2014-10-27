@@ -48,5 +48,6 @@ urlpatterns = patterns('',
     url(r'^addcomment/(?P<param>.+)', addcomment),
     url(r'^follow/(?P<param>.+)', follow),
     url(r'^unfollow/(?P<param>.+)', unfollow),
+    url(r'^dismissstalkalert/(?P<param>.+)', dismissstalkalert),
 
 )

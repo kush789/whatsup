@@ -130,11 +130,15 @@ def home(request):
 				votevalue[post.pid] = vote.value
 			except:
 				votevalue[post.pid] = 0
+		stalkerlist = []
+
+		for stalker in stalks.objects.filter(uid = curruser.uid):
+			stalkerlist.append(usersinfo.objects.get(uid = stalker.sid))
 
 		postform = post_form()
 		commentform = comment_form
 		print curruser.userimage.url
-		return render(request, 'home.html', {'count':count,'votevalue':votevalue,'allfollowers':followlist,'allfollowing':allfollowing,'followingcount':len(allfollowing)-1,'followcount':len(allfollowers)-1,'mastercomment':mastercomment,'commentform':commentform,'postform':postform, 'curruser':curruser, 'allposts':allposts, 'path':MEDIA_ROOT})
+		return render(request, 'home.html', {'count':count,'votevalue':votevalue,'stalkerlist':stalkerlist,'allfollowers':followlist,'allfollowing':allfollowing,'followingcount':len(allfollowing)-1,'followcount':len(allfollowers)-1,'mastercomment':mastercomment,'commentform':commentform,'postform':postform, 'curruser':curruser, 'allposts':allposts, 'path':MEDIA_ROOT})
 	else:
 		return render(request, 'index.html',{'str':'You must log in first'})
 
@@ -243,6 +247,14 @@ def viewuser(request,param):
 			except:
 				followstatus = 0
 
+			try:
+				stalk = stalks.objects.get(uid = newuser.uid,sid = curruser.uid)
+				print "stalk found"
+			except:
+				stalk = stalks(uid = newuser.uid,sid = curruser.uid)
+				stalk.save()
+				print "new stalk"
+
 			allfollowers = follows.objects.filter(fid = newuser.uid)
 			allfollowing = follows.objects.filter(uid = newuser.uid)
 			return render(request, 'viewuser.html',{'newuser':newuser,'votevalue':votevalue,'followingcount':len(allfollowing)-1,'followcount':len(allfollowers)-1,'followstatus':followstatus, 'commentform':commentform,'commentdict':commentdict,'allposts':allposts, 'count':len(allposts)})
@@ -250,6 +262,23 @@ def viewuser(request,param):
 			return render(request, 'usernotfound.html')
 	else:
 		return redirect('/')
+
+def dismissstalkalert(request,param):
+	if request.user.is_authenticated():
+		curruser = usersinfo.objects.get(loginid = request.user.email)
+		if curruser.status == 0:
+			return redirect('/update')
+
+		for stalk in stalks.objects.filter(uid = curruser.uid):
+			stalk.delete()
+
+		return redirect('/home')
+
+	else:
+		return redirect('/')
+	
+
+
 
 def upvotepost(request,param):
 	if request.user.is_authenticated():

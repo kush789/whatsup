@@ -56,3 +56,7 @@ class commentvotes(models.Model):
 	cid = models.IntegerField(max_length = 15)
 	value = models.IntegerField(max_length = 15)
 
+class stalks(models.Model):
+	id = models.AutoField(primary_key = True)
+	uid = models.IntegerField(max_length = 15)
+	sid = models.IntegerField(max_length = 15)
