@@ -94,74 +94,43 @@
                                     {% endif %}
                                    <div class="clearfix">{{post.posttext}}</div>
                                     <hr>
-                                    {% if votevalue == 1%}
-                                   <div class = 'row'>
-                                      <div class = 'col-md-2'>  
-                                        <form method = 'link' action = '/upvotepost/{{post.pid}}'>
-                                          <input type = 'submit' class = 'btn btn-success btn-md' value = '{{post.upcount}}'>
+                                    <div class = 'row'>
+                                      <div class = 'col-md-2'>
+                                        <form method = 'POST' action = '/upvotepost/{{post.pid}}' id = 'uppost'>
+                                          {% csrf_token %}
+                                          {% if votevalue == 1%}
+                                          <input id ='uppost' type = 'submit' class = 'btn btn-md btn-success' value = '{{post.upcount}}'>
+                                          {% else %}
+                                          <input id ='uppost' type = 'submit' class = 'btn btn-md btn-default' value = '{{post.upcount}}'>
+                                          {% endif %}
                                           up
                                         </form>
-                                        </div>
-                                        <div class = 'col-md-2'>
-                                        <form method = 'link' action = '/downvotepost/{{post.pid}}'>
-                                          <input type = 'submit' class = 'btn btn-default btn-md' value = '{{post.downcount}}'>
-                                        down
+                                      </div>
+                                      <div class = 'col-md-2'>
+                                        <form method  'POST' action = '/downvotepost/{{post.pid}}' id = 'downpost'>
+                                          {% csrf_token %}
+                                          {% if votevalue == -1 %}
+                                          <input type = 'submit' class = 'btn btn-md btn-danger' value = '{{post.downcount}}'>
+                                          {% else %}
+                                          <input type = 'submit' class = 'btn btn-md btn-default' value = '{{post.downcount}}'>
+                                          {% endif %}
+                                          down
                                         </form>
                                       </div>
                                       <div class = 'col-md-5'></div>
-                                      {% if curruser.uid == postuser.uid %}
-                                      <div class = 'col-md-2'>
-                                        <a href = '/deletepost/{{post.pid}}' class = 'btn btn-danger btn-md'>Delete Post</a>
-                                      </div>
-                                      {% endif %}
-                                    </div>
-                                    {% elif votevalue == -1 %}
-                                  <div class = 'row'>
-                                      <div class = 'col-md-2'>  
-                                        <form method = 'link' action = '/upvotepost/{{post.pid}}'>
-                                          <input type = 'submit' class = 'btn btn-default btn-md' value = '{{post.upcount}}'>
-                                          up
-                                        </form>
+                                        <div class = 'col-md-3'>
+                                          {% if curruser.uid == postuser.uid %}
+                                            <div class = 'col-md-2'>
+                                              <a href = '/deletepost/{{post.pid}}' class = 'btn btn-md btn-danger'>Delete Post</a>
+                                              </div>
+                                          {% endif %}
                                         </div>
-                                        <div class = 'col-md-2'>
-                                        <form method = 'link' action = '/downvotepost/{{post.pid}}'>
-                                          <input type = 'submit' class = 'btn btn-danger btn-md' value = '{{post.downcount}}'>
-                                        down
-                                        </form>
-                                      </div>
-                                      <div class = 'col-md-5'></div>
-                                      {% if curruser.uid == postuser.uid %}
-                                      <div class = 'col-md-2'>
-                                        <a href = '/deletepost/{{post.pid}}' class = 'btn btn-danger btn-md'>Delete Post</a>
-                                      </div>
-                                      {% endif %}
                                     </div>
-                                   {% elif votevalue == 0 %}
-                                  <div class = 'row'>
-                                      <div class = 'col-md-2'>  
-                                        <form method = 'link' action = '/upvotepost/{{post.pid}}'>
-                                          <input type = 'submit' class = 'btn btn-default btn-md' value = '{{post.upcount}}'>
-                                          up
-                                        </form>
-                                        </div>
-                                        <div class = 'col-md-2'>
-                                        <form method = 'link' action = '/downvotepost/{{post.pid}}'>
-                                          <input type = 'submit' class = 'btn btn-default btn-md' value = '{{post.downcount}}'>
-                                        down
-                                        </form>
-                                      </div>
-                                      <div class = 'col-md-5'></div>
-                                      {% if curruser.uid == postuser.uid %}
-                                      <div class = 'col-md-2'>
-                                        <a href = '/deletepost/{{post.pid}}' class = 'btn btn-danger btn-md'>Delete Post</a>
-                                      </div>
-                                      {% endif %}
-                                    </div>
-                                    {% endif %}
+
                                     <hr>
 
-                                    <form method = 'POST' action = '/addcomment/{{post.pid}}'>
-                                      {% csrf_token %}
+                                    <form method = 'POST' action = '/addcomment/{{post.pid}}'>{% csrf_token %}
+
                                     <div class="row">
                                       <div class = 'col-md-9'>
                                         {{ commentform | bootstrap }}
@@ -176,7 +145,22 @@
                                     {% for comment in allcomments %}
                                     <div class = 'well'>
                                       <div class = 'row'>
-                                      <div class = 'col-md-9'>
+                                        <div class = 'col-md-2'>
+                                          <div class = 'row'>
+                                            <div class = 'col-md-6'>
+                                              <form method = 'link' action = '/upvotecomment/{{comment.cid}}'>
+                                                {% csrf_token %}
+                                                <input type = 'submit' class = 'btn btn-md btn-success' value = '{{comment.upcount}}'>
+                                              </form>
+                                            </div>
+                                            <div class = 'col-md-6'>
+                                              <form method = 'link' action = '/downvotecomment/{{comment.cid}}'>
+                                                <input type = 'submit' class = 'btn btn-md btn-default' value = '{{comment.downcount}}'>
+                                              </form>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      <div class = 'col-md-7'>
                                         {{ comment.commenttext }}
                                       </div>
                                       {% if comment.uid == curruser.uid %}
@@ -217,5 +201,88 @@
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 		<script src="../../static/files/js/bootstrap.min.js"></script>
 		<script src="./../static/files/js/homescripts.js"></script>
+
+<!-- upvote downvote post ajax -->
+    <script>                                            
+      $("#uppost").submit(function(e)
+      {
+          formurl = $(this).attr("action");
+          $.ajax(
+          {
+            url : formurl,
+            type : "POST",
+            data : 
+            {
+            "csrfmiddlewaretoken" : $("#uppost input[name=csrfmiddlewaretoken]").val(),
+            },
+            success:function(data, textStatus, jqXHR)
+            {
+
+              if( $("#uppost input[type=submit]").attr('class') == "btn btn-md btn-success")
+              {
+                $("#uppost input[type=submit]").attr('class','btn btn-md btn-default');
+              }
+              else
+              {
+                $("#downpost input[type=submit]").attr('class','btn btn-md btn-default');
+                $("#uppost input[type=submit]").attr('class','btn btn-md btn-success');
+              }
+              $("#uppost input[type=submit]").val(data['upcount']);
+              $("#downpost input[type=submit]").val(data['downcount']);
+
+
+            },
+            error:function(jqXHR, textStatus, errorThrown)
+            {
+              alert("server is down, please try after some time")
+              alert(errorThrown)
+            }
+          });
+
+          e.preventDefault();
+          e.unbind();
+      });
+
+      $("#downpost").submit(function(e)
+      {
+          formurl = $(this).attr("action");
+          $.ajax(
+          {
+            url : formurl,
+            type : "POST",
+            data : 
+            {
+            "csrfmiddlewaretoken" : $("#downpost input[name=csrfmiddlewaretoken]").val(),
+            },
+            success:function(data, textStatus, jqXHR)
+            {
+
+              if( $("#downpost input[type=submit]").attr('class') == "btn btn-md btn-danger")
+              {
+                $("#downpost input[type=submit]").attr('class','btn btn-md btn-default');
+              }
+              else
+              {
+                $("#downpost input[type=submit]").attr('class','btn btn-md btn-danger');
+                $("#uppost input[type=submit]").attr('class','btn btn-md btn-default');
+              }
+              $("#uppost input[type=submit]").val(data['upcount']);
+              $("#downpost input[type=submit]").val(data['downcount']);
+
+            },
+            error:function(jqXHR, textStatus, errorThrown)
+            {
+              alert("server is down, please try after some time")
+              alert(errorThrown)
+            }
+          });
+
+          e.preventDefault();
+          e.unbind();
+      });
+
+    </script
+
+
 	</body>
 </html>

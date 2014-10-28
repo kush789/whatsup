@@ -7,7 +7,8 @@ from whats.models import *
 from whatsup.forms import *
 from whatsup.settings import MEDIA_ROOT, STATIC_URL, ROOT_PATH, BASE_DIR
 from os import remove, rename
-
+from django.utils import simplejson
+import json
 def index(request):
 	if request.user.is_authenticated():
 		try:
@@ -278,6 +279,65 @@ def dismissstalkalert(request,param):
 		return redirect('/')
 	
 
+def upvotecomment(request,param):
+	print "up reached"
+	if request.user.is_authenticated():
+		curruser = usersinfo.objects.get(loginid = request.user.email)
+		currcomment = comments.objects.get(cid = param)
+		if curruser.status == 0:
+			return redirect('/update')
+		try:
+			vote = commentvotes.objects.get(uid = curruser.uid, cid = param)
+			if vote.value == 1:
+				vote.value = 0
+				currcomment.upcount-=1
+			elif vote.value == -1:
+				currcomment.downcount -=1
+				currcomment.upcount +=1
+				vote.value = 1
+			elif vote.value == 0:
+				currcomment.upcount+=1
+				vote.value = 1
+			vote.save()
+			currcomment.save()
+		except:
+			vote = commentvotes(uid = curruser.uid, cid = param, value = int(1))
+			currcomment.upcount +=1
+			vote.save()
+			currcomment.save()
+		return redirect('/viewpost/'+str(currcomment.pid))
+
+	else:
+		return redirect('/')
+
+def downvotecomment(request,param):
+	if request.user.is_authenticated():
+		curruser = usersinfo.objects.get(loginid = request.user.email)
+		currcomment = comments.objects.get(cid = param)
+		if curruser.status == 0:
+			return redirect('/update')
+		try:
+			vote = commentvotes.objects.get(uid = curruser.uid, cid = param)
+			if vote.value == 1:
+				vote.value = -1
+				currcomment.downcount +=1
+				currcomment.upcount -=1
+			elif vote.value == -1:
+				vote.value = 0
+				currcomment.downcount-=1
+			elif vote.value == 0:
+				vote.value = -1
+				currcomment.downcount+=1
+			vote.save()
+			currcomment.save()
+		except:
+			vote = commentvotes(uid = curruser.uid, cid = param, value = int(-1))
+			currpost.downcount +=1
+			vote.save()
+			currcomment.save()
+		return redirect('/viewpost/'+str(currcomment.pid))
+	else:
+		return redirect('/')
 
 
 def upvotepost(request,param):
@@ -305,8 +365,7 @@ def upvotepost(request,param):
 			currpost.upcount +=1
 			vote.save()
 			currpost.save()
-		return redirect('/viewpost/'+str(param))
-
+		return HttpResponse(json.dumps({'upcount':currpost.upcount,'downcount':currpost.downcount}), mimetype='application/json')
 	else:
 		return redirect('/')
 
@@ -335,7 +394,7 @@ def downvotepost(request,param):
 			currpost.downcount +=1
 			vote.save()
 			currpost.save()
-		return redirect('/viewpost/'+str(param))
+		return HttpResponse(json.dumps({'upcount':currpost.upcount,'downcount':currpost.downcount}), mimetype='application/json')
 
 	else:
 		return redirect('/')
