@@ -1,4 +1,3 @@
-
 {% load bootstrap %}
 
 <!DOCTYPE html>
@@ -103,7 +102,7 @@
                                           {% else %}
                                           <input id ='uppost' type = 'submit' class = 'btn btn-md btn-default' value = '{{post.upcount}}'>
                                           {% endif %}
-                                          up
+                                          <i class="fa fa-thumbs-up"></i>
                                         </form>
                                       </div>
                                       <div class = 'col-md-2'>
@@ -114,7 +113,7 @@
                                           {% else %}
                                           <input type = 'submit' class = 'btn btn-md btn-default' value = '{{post.downcount}}'>
                                           {% endif %}
-                                          down
+                                          <i class="fa fa-thumbs-down"></i>
                                         </form>
                                       </div>
                                       <div class = 'col-md-5'></div>

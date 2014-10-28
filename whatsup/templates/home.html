@@ -200,7 +200,7 @@
                                     {% endif %}
                                     <div class="clearfix">{{post.posttext}}</div>
                                     <hr>
-                                     {% for index, value in votevalue.items %}
+                                    {% for index, value in votevalue.items %}
                                     {% if index == post.pid %}
                                     <div class = 'row'>
                                       <div class = 'col-md-2'>
@@ -211,10 +211,10 @@
                                           {% else %}
                                           <input type = 'submit' class = 'btn btn-md btn-default' value = '{{post.upcount}}'>
                                           {% endif %}
-                                          up
+                                          <i class="fa fa-thumbs-up"></i>
                                         </form>
                                       </div>
-                                      <div class = 'col-md-3'>
+                                      <div class = 'col-md-2'>
                                         <form method  'POST' action = '/downvotepost/{{post.pid}}' id = 'downpost{{post.pid}}'>
                                           {% csrf_token %}
                                           {% if value == -1 %}
@@ -222,10 +222,10 @@
                                           {% else %}
                                           <input type = 'submit' class = 'btn btn-md btn-default' value = '{{post.downcount}}'>
                                           {% endif %}
-                                          down
+                                          <i class="fa fa-thumbs-down"></i>
                                         </form>
                                       </div>
-                                      <div class = 'col-md-1'></div>
+                                      <div class = 'col-md-2'></div>
                                         <div class = 'col-md-3'>
                                           {% if curruser.uid == post.uid %}
                                             <div class = 'col-md-2'>
@@ -233,7 +233,7 @@
                                               </div>
                                           {% endif %}
                                         </div>
-                                      <div class = 'col-md-3'>
+                                      <div class = 'col-md-2'>
                                         <form method = 'link' action = '/viewpost/{{post.pid}}'>
                                           <input type = 'submit' class = 'btn btn-md btn-default' value = "View Post">
                                         </form>
