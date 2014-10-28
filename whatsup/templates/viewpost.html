@@ -147,15 +147,32 @@
                                         <div class = 'col-md-2'>
                                           <div class = 'row'>
                                             <div class = 'col-md-6'>
-                                              <form method = 'link' action = '/upvotecomment/{{comment.cid}}'>
+                                              <form method = 'POST' action = '/upvotecomment/{{comment.cid}}'>
                                                 {% csrf_token %}
-                                                <input type = 'submit' class = 'btn btn-md btn-success' value = '{{comment.upcount}}'>
+                                                {% for commentid,commentvotevalue in allcommentvotes.items %}
+                                                  {% if commentid == comment.cid %}
+                                                    {% if commentvotevalue == 1 %} 
+                                                      <input type = 'submit' class = 'btn btn-md btn-success' value = '{{comment.upcount}}'>
+                                                    {% else %}
+                                                     <input type = 'submit' class = 'btn btn-md btn-default' value = '{{comment.upcount}}'>
+                                                    {% endif %}
+                                                  {% endif %}
+                                                {% endfor %}
                                               </form>
                                             </div>
                                             <div class = 'col-md-6'>
-                                              <form method = 'link' action = '/downvotecomment/{{comment.cid}}'>
-                                                <input type = 'submit' class = 'btn btn-md btn-default' value = '{{comment.downcount}}'>
-                                              </form>
+                                              <form method = 'POST' action = '/downvotecomment/{{comment.cid}}'>
+                                                {% csrf_token %}
+                                                {% for commentid,commentvotevalue in allcommentvotes.items %}
+                                                  {% if commentid == comment.cid %}
+                                                    {% if commentvotevalue == -1 %} 
+                                                      <input type = 'submit' class = 'btn btn-md btn-danger' value = '{{comment.downcount}}'>
+                                                    {% else %}
+                                                     <input type = 'submit' class = 'btn btn-md btn-default' value = '{{comment.downcount}}'>
+                                                    {% endif %}
+                                                  {% endif %}
+                                                {% endfor %}
+                                             </form>
                                             </div>
                                           </div>
                                         </div>

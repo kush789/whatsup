@@ -71,7 +71,6 @@ def save_userimage(file, userloginid ,path = 'userimg'):
 	filename = file._get_name()
 
 	fd = open('%s/%s/%s' % (MEDIA_ROOT, str(path),str(userloginid)), 'w')
-	print MEDIA_ROOT+str(path)+str(userloginid)
 	for chunk in file.chunks():
 		fd.write(chunk)
 	fd.close()
@@ -138,7 +137,6 @@ def home(request):
 
 		postform = post_form()
 		commentform = comment_form
-		print curruser.userimage.url
 		return render(request, 'home.html', {'count':count,'votevalue':votevalue,'stalkerlist':stalkerlist,'allfollowers':followlist,'allfollowing':allfollowing,'followingcount':len(allfollowing)-1,'followcount':len(allfollowers)-1,'mastercomment':mastercomment,'commentform':commentform,'postform':postform, 'curruser':curruser, 'allposts':allposts, 'path':MEDIA_ROOT})
 	else:
 		return render(request, 'index.html',{'str':'You must log in first'})
@@ -248,11 +246,9 @@ def viewuser(request,param):
 
 			try:
 				stalk = stalks.objects.get(uid = newuser.uid,sid = curruser.uid)
-				print "stalk found"
 			except:
 				stalk = stalks(uid = newuser.uid,sid = curruser.uid)
 				stalk.save()
-				print "new stalk"
 
 			allfollowers = follows.objects.filter(fid = newuser.uid)
 			allfollowing = follows.objects.filter(uid = newuser.uid)
@@ -278,122 +274,127 @@ def dismissstalkalert(request,param):
 	
 
 def upvotecomment(request,param):
-	print "up reached"
 	if request.user.is_authenticated():
-		curruser = usersinfo.objects.get(loginid = request.user.email)
-		currcomment = comments.objects.get(cid = param)
-		if curruser.status == 0:
-			return redirect('/update')
-		try:
-			vote = commentvotes.objects.get(uid = curruser.uid, cid = param)
-			if vote.value == 1:
-				vote.value = 0
-				currcomment.upcount-=1
-			elif vote.value == -1:
-				currcomment.downcount -=1
+		if request.method == "POST":
+			curruser = usersinfo.objects.get(loginid = request.user.email)
+			currcomment = comments.objects.get(cid = param)
+			if curruser.status == 0:
+				return redirect('/update')
+			try:
+				vote = commentvotes.objects.get(uid = curruser.uid, cid = param)
+				if vote.value == 1:
+					vote.value = 0
+					currcomment.upcount-=1
+				elif vote.value == -1:
+					currcomment.downcount -=1
+					currcomment.upcount +=1
+					vote.value = 1
+				elif vote.value == 0:
+					currcomment.upcount+=1
+					vote.value = 1
+				vote.save()
+				currcomment.save()
+			except:
+				vote = commentvotes(uid = curruser.uid, cid = param, value = int(1))
 				currcomment.upcount +=1
-				vote.value = 1
-			elif vote.value == 0:
-				currcomment.upcount+=1
-				vote.value = 1
-			vote.save()
-			currcomment.save()
-		except:
-			vote = commentvotes(uid = curruser.uid, cid = param, value = int(1))
-			currcomment.upcount +=1
-			vote.save()
-			currcomment.save()
-		return redirect('/viewpost/'+str(currcomment.pid))
-
+				vote.save()
+				currcomment.save()
+			return redirect('/viewpost/'+str(currcomment.pid))
 	else:
 		return redirect('/')
 
 def downvotecomment(request,param):
 	if request.user.is_authenticated():
-		curruser = usersinfo.objects.get(loginid = request.user.email)
-		currcomment = comments.objects.get(cid = param)
-		if curruser.status == 0:
-			return redirect('/update')
-		try:
-			vote = commentvotes.objects.get(uid = curruser.uid, cid = param)
-			if vote.value == 1:
-				vote.value = -1
+		if request.method == "POST":
+			curruser = usersinfo.objects.get(loginid = request.user.email)
+			currcomment = comments.objects.get(cid = param)
+			if curruser.status == 0:
+				return redirect('/update')
+			try:
+				vote = commentvotes.objects.get(uid = curruser.uid, cid = param)
+				if vote.value == 1:
+					vote.value = -1
+					currcomment.downcount +=1
+					currcomment.upcount -=1
+				elif vote.value == -1:
+					vote.value = 0
+					currcomment.downcount-=1
+				elif vote.value == 0:
+					vote.value = -1
+					currcomment.downcount+=1
+				vote.save()
+				currcomment.save()
+			except:
+				vote = commentvotes(uid = curruser.uid, cid = param, value = int(-1))
 				currcomment.downcount +=1
-				currcomment.upcount -=1
-			elif vote.value == -1:
-				vote.value = 0
-				currcomment.downcount-=1
-			elif vote.value == 0:
-				vote.value = -1
-				currcomment.downcount+=1
-			vote.save()
-			currcomment.save()
-		except:
-			vote = commentvotes(uid = curruser.uid, cid = param, value = int(-1))
-			currpost.downcount +=1
-			vote.save()
-			currcomment.save()
-		return redirect('/viewpost/'+str(currcomment.pid))
+				vote.save()
+				currcomment.save()
+			return redirect('/viewpost/'+str(currcomment.pid))
 	else:
 		return redirect('/')
 
 
 def upvotepost(request,param):
 	if request.user.is_authenticated():
-		curruser = usersinfo.objects.get(loginid = request.user.email)
-		currpost = posts.objects.get(pid = param)
-		if curruser.status == 0:
-			return redirect('/update')
-		try:
-			vote = postvotes.objects.get(uid = curruser.uid, pid = param)
-			if vote.value == 1:
-				vote.value = 0
-				currpost.upcount-=1
-			elif vote.value == -1:
-				currpost.downcount -=1
+		if request.method == "POST":
+			curruser = usersinfo.objects.get(loginid = request.user.email)
+			currpost = posts.objects.get(pid = param)
+			if curruser.status == 0:
+				return redirect('/update')
+			try:
+				vote = postvotes.objects.get(uid = curruser.uid, pid = param)
+				if vote.value == 1:
+					vote.value = 0
+					currpost.upcount-=1
+				elif vote.value == -1:
+					currpost.downcount -=1
+					currpost.upcount +=1
+					vote.value = 1
+				elif vote.value == 0:
+					currpost.upcount+=1
+					vote.value = 1
+				vote.save()
+				currpost.save()
+			except:
+				vote = postvotes(uid = curruser.uid, pid = param, value = int(1))
 				currpost.upcount +=1
-				vote.value = 1
-			elif vote.value == 0:
-				currpost.upcount+=1
-				vote.value = 1
-			vote.save()
-			currpost.save()
-		except:
-			vote = postvotes(uid = curruser.uid, pid = param, value = int(1))
-			currpost.upcount +=1
-			vote.save()
-			currpost.save()
-		return HttpResponse(json.dumps({'upcount':currpost.upcount,'downcount':currpost.downcount}), mimetype='application/json')
+				vote.save()
+				currpost.save()
+			return HttpResponse(json.dumps({'upcount':currpost.upcount,'downcount':currpost.downcount}), mimetype='application/json')
+		else:
+			return redirect('/')
 	else:
 		return redirect('/')
 
 def downvotepost(request,param):
 	if request.user.is_authenticated():
-		curruser = usersinfo.objects.get(loginid = request.user.email)
-		currpost = posts.objects.get(pid = param)
-		if curruser.status == 0:
-			return redirect('/update')
-		try:
-			vote = postvotes.objects.get(uid = curruser.uid, pid = param)
-			if vote.value == 1:
-				vote.value = -1
+		if request.method == "POST":
+			curruser = usersinfo.objects.get(loginid = request.user.email)
+			currpost = posts.objects.get(pid = param)
+			if curruser.status == 0:
+				return redirect('/update')
+			try:
+				vote = postvotes.objects.get(uid = curruser.uid, pid = param)
+				if vote.value == 1:
+					vote.value = -1
+					currpost.downcount +=1
+					currpost.upcount -=1
+				elif vote.value == -1:
+					vote.value = 0
+					currpost.downcount-=1
+				elif vote.value == 0:
+					vote.value = -1
+					currpost.downcount+=1
+				vote.save()
+				currpost.save()
+			except:
+				vote = postvotes(uid = curruser.uid, pid = param, value = int(-1))
 				currpost.downcount +=1
-				currpost.upcount -=1
-			elif vote.value == -1:
-				vote.value = 0
-				currpost.downcount-=1
-			elif vote.value == 0:
-				vote.value = -1
-				currpost.downcount+=1
-			vote.save()
-			currpost.save()
-		except:
-			vote = postvotes(uid = curruser.uid, pid = param, value = int(-1))
-			currpost.downcount +=1
-			vote.save()
-			currpost.save()
-		return HttpResponse(json.dumps({'upcount':currpost.upcount,'downcount':currpost.downcount}), mimetype='application/json')
-
+				vote.save()
+				currpost.save()
+			return HttpResponse(json.dumps({'upcount':currpost.upcount,'downcount':currpost.downcount}), mimetype='application/json')
+		else:
+			return redirect('/')
 	else:
 		return redirect('/')
 
@@ -403,6 +404,9 @@ def viewpost(request,param):
 		curruser = usersinfo.objects.get(loginid = request.user.email)
 		if curruser.status == 0:
 			return redirect('/update')
+		allcomments = comments.objects.filter(pid = param)
+
+
 
 		try:
 			currpost = posts.objects.get(pid = param)
@@ -411,13 +415,22 @@ def viewpost(request,param):
 				newcomment = comments(uid = curruser.uid, pid = param, fname = curruser.fname, lname = curruser.lname, loginid = curruser.loginid, commenttext = request.POST['commenttext'], upcount = 0, downcount = 0)
 				newcomment.save()
 			allcomments = comments.objects.filter(pid = param)
+			allcommentvotes = {}
+
+			for comment in allcomments:
+				try:
+					vote = commentvotes.objects.get(cid = comment.cid,uid=curruser.uid)
+					allcommentvotes[comment.cid] = vote.value
+				except:
+					allcommentvotes[comment.cid] = 0
+
 			commentform = comment_form
 			try:
 				vote = postvotes.objects.get(pid = param, uid = curruser.uid)
 				votevalue = vote.value
 			except:
 				votevalue = 0
-			return render(request, 'viewpost.html', {'post':currpost,'votevalue':votevalue,'allcomments':allcomments,'postuser':postuser,'curruser':curruser, 'commentform':commentform})
+			return render(request, 'viewpost.html', {'post':currpost,'allcommentvotes':allcommentvotes,'votevalue':votevalue,'allcomments':allcomments,'postuser':postuser,'curruser':curruser, 'commentform':commentform})
 		except:
 			return render(request, 'postnotfound.html')
 	else:
@@ -451,13 +464,11 @@ def deletecomment(request,param):
 
 
 def addcomment(request,param):
-	print "reached"
 	if request.user.is_authenticated():
 		curruser = usersinfo.objects.get(loginid = request.user.email)
 		if curruser.status == 0:
 			return redirect('/update')
 		if request.method == "POST":
-			print "newcom"
 			newcomment = comments(uid = curruser.uid, pid = param, fname = curruser.fname, lname = curruser.lname, loginid = curruser.loginid, commenttext = request.POST['commenttext'], upcount = 0, downcount = 0)
 			newcomment.save()
 		return redirect('/viewpost/'+str(param))
