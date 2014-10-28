@@ -100,9 +100,9 @@
                                         <form method = 'POST' action = '/upvotepost/{{post.pid}}' id = 'uppost{{post.pid}}'>
                                           {% csrf_token %}
                                           {% if value == 1 %}
-                                          <input id ='uppost' type = 'submit' class = 'btn btn-md btn-success' value = '{{post.upcount}}'>
+                                          <input type = 'submit' class = 'btn btn-md btn-success' value = '{{post.upcount}}'>
                                           {% else %}
-                                          <input id ='uppost' type = 'submit' class = 'btn btn-md btn-default' value = '{{post.upcount}}'>
+                                          <input type = 'submit' class = 'btn btn-md btn-default' value = '{{post.upcount}}'>
                                           {% endif %}
                                           up
                                         </form>
