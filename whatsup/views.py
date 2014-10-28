@@ -156,9 +156,7 @@ def discover(request):
 		curruser = usersinfo.objects.get(loginid = request.user.email)
 		if curruser.status == 0:
 			return redirect('/update')
-		currpost = posts.objects.filter(uid = curruser.uid)
 		allposts = posts.objects.all()
-
 		allposts = allposts[::-1]
 
 		commentdict = {}
@@ -166,7 +164,7 @@ def discover(request):
 
 		for post in allposts:
 			try:
-				vote = postvotes.objects.get(pid = post.pid)
+				vote = postvotes.objects.get(pid = post.pid,uid = curruser.uid)
 				votevalue[post.pid] = vote.value
 			except:
 				votevalue[post.pid] = 0
@@ -175,7 +173,7 @@ def discover(request):
 			commentdict[post.pid] = comments.objects.filter(pid = post.pid)
 
 		commentform = comment_form
-		return render(request, 'discover.html', {'allposts':allposts,'votevalue':votevalue,'curruser':curruser,'commentdict':commentdict,'count':len(currpost),'commentform':commentform})
+		return render(request, 'discover.html', {'allposts':allposts,'votevalue':votevalue,'curruser':curruser,'commentdict':commentdict,'commentform':commentform})
 		
 	else:
 		return redirect('/')
