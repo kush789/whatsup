@@ -325,7 +325,7 @@ def upvotecomment(request,param):
 				currcomment.upcount +=1
 				vote.save()
 				currcomment.save()
-			return redirect('/viewpost/'+str(currcomment.pid))
+			return HttpResponse(json.dumps({'upcount':currcomment.upcount,'downcount':currcomment.downcount}), mimetype='application/json')
 	else:
 		return redirect('/')
 
@@ -355,7 +355,7 @@ def downvotecomment(request,param):
 				currcomment.downcount +=1
 				vote.save()
 				currcomment.save()
-			return redirect('/viewpost/'+str(currcomment.pid))
+			return HttpResponse(json.dumps({'upcount':currcomment.upcount,'downcount':currcomment.downcount}), mimetype='application/json')
 	else:
 		return redirect('/')
 
