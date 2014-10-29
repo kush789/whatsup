@@ -21,3 +21,5 @@ The application uses mysql. Make sure you have it installed before running. Crea
 Also, needs django bootstrap forms
 
   pip install django-bootstrap-form
+  
+Do not forget to make the db "whatsup" and dyncdb aftter it. Then runserver and voila, youre done :D
