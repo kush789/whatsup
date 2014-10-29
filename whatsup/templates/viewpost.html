@@ -147,7 +147,7 @@
                                         <div class = 'col-md-2'>
                                           <div class = 'row'>
                                             <div class = 'col-md-6'>
-                                              <form method = 'POST' action = '/upvotecomment/{{comment.cid}}'>
+                                              <form method = 'POST' action = '/upvotecomment/{{comment.cid}}' id = 'upcomment{{comment.cid}}'>
                                                 {% csrf_token %}
                                                 {% for commentid,commentvotevalue in allcommentvotes.items %}
                                                   {% if commentid == comment.cid %}
@@ -160,8 +160,8 @@
                                                 {% endfor %}
                                               </form>
                                             </div>
-                                            <div class = 'col-md-6'>
-                                              <form method = 'POST' action = '/downvotecomment/{{comment.cid}}'>
+                                            <div class = 'col-md-4'>
+                                              <form method = 'POST' action = '/downvotecomment/{{comment.cid}}' id = 'downcomment{{comment.cid}}'>
                                                 {% csrf_token %}
                                                 {% for commentid,commentvotevalue in allcommentvotes.items %}
                                                   {% if commentid == comment.cid %}

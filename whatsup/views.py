@@ -95,10 +95,17 @@ def home(request):
 				pass
 			newpost.save()
 		mastercomment = {}
-		allpos = posts.objects.all()
-
-		for i in allpos:
+		allposts = posts.objects.all()
+		allcommentvotes = {}
+		for i in allposts:
 			mastercomment[i.pid] = comments.objects.filter(pid = i.pid)
+			for comment in mastercomment[i.pid]:
+				try:
+					vote = commentvotes.objects.get(uid = curruser.uid, cid=comment.cid)
+					allcommentvotes[comment.cid] = vote.value
+				except:
+					allcommentvotes[comment.cid] = 0
+
 		commentform = comment_form
 
 		curruserposts = posts.objects.filter(uid = curruser.uid)
@@ -137,7 +144,7 @@ def home(request):
 
 		postform = post_form()
 		commentform = comment_form
-		return render(request, 'home.html', {'count':count,'votevalue':votevalue,'stalkerlist':stalkerlist,'allfollowers':followlist,'allfollowing':allfollowing,'followingcount':len(allfollowing)-1,'followcount':len(allfollowers)-1,'mastercomment':mastercomment,'commentform':commentform,'postform':postform, 'curruser':curruser, 'allposts':allposts, 'path':MEDIA_ROOT})
+		return render(request, 'home.html', {'count':count,'votevalue':votevalue,'allcommentvotes':allcommentvotes,'stalkerlist':stalkerlist,'allfollowers':followlist,'allfollowing':allfollowing,'followingcount':len(allfollowing)-1,'followcount':len(allfollowers)-1,'mastercomment':mastercomment,'commentform':commentform,'postform':postform, 'curruser':curruser, 'allposts':allposts, 'path':MEDIA_ROOT})
 	else:
 		return render(request, 'index.html',{'str':'You must log in first'})
 
@@ -159,6 +166,16 @@ def discover(request):
 
 		commentdict = {}
 		votevalue = {}
+		allcommentvotes = {}
+		mastercomment = {}
+		for i in allposts:
+			mastercomment[i.pid] = comments.objects.filter(pid = i.pid)
+			for comment in mastercomment[i.pid]:
+				try:
+					vote = commentvotes.objects.get(uid = curruser.uid, cid=comment.cid)
+					allcommentvotes[comment.cid] = vote.value
+				except:
+					allcommentvotes[comment.cid] = 0
 
 		for post in allposts:
 			try:
@@ -171,7 +188,7 @@ def discover(request):
 			commentdict[post.pid] = comments.objects.filter(pid = post.pid)
 
 		commentform = comment_form
-		return render(request, 'discover.html', {'allposts':allposts,'votevalue':votevalue,'curruser':curruser,'commentdict':commentdict,'commentform':commentform})
+		return render(request, 'discover.html', {'allposts':allposts,'votevalue':votevalue,'allcommentvotes':allcommentvotes,'curruser':curruser,'commentdict':commentdict,'commentform':commentform})
 		
 	else:
 		return redirect('/')
@@ -224,6 +241,15 @@ def viewuser(request,param):
 			
 			commentform = comment_form
 			allposts = allposts[::-1]
+			allcommentvotes = {}
+			for i in allposts:
+				for comment in comments.objects.filter(pid = i.pid):
+					try:
+						vote = commentvotes.objects.get(uid = curruser.uid, cid=comment.cid)
+						allcommentvotes[comment.cid] = vote.value
+					except:
+						allcommentvotes[comment.cid] = 0
+
 
 			postform = post_form()
 			commentform = comment_form
@@ -252,7 +278,7 @@ def viewuser(request,param):
 
 			allfollowers = follows.objects.filter(fid = newuser.uid)
 			allfollowing = follows.objects.filter(uid = newuser.uid)
-			return render(request, 'viewuser.html',{'newuser':newuser,'votevalue':votevalue,'followingcount':len(allfollowing)-1,'followcount':len(allfollowers)-1,'followstatus':followstatus, 'commentform':commentform,'commentdict':commentdict,'allposts':allposts, 'count':len(allposts)})
+			return render(request, 'viewuser.html',{'newuser':newuser,'allcommentvotes':allcommentvotes,'votevalue':votevalue,'followingcount':len(allfollowing)-1,'followcount':len(allfollowers)-1,'followstatus':followstatus, 'commentform':commentform,'commentdict':commentdict,'allposts':allposts, 'count':len(allposts)})
 		except:
 			return render(request, 'usernotfound.html')
 	else:
@@ -489,6 +515,15 @@ def myposts(request):
 			mastercomment[i.pid] = comments.objects.filter(pid = i.pid)
 		commentform = comment_form
 		votevalue = {}
+		allcommentvotes = {}
+		for i in allposts:
+			mastercomment[i.pid] = comments.objects.filter(pid = i.pid)
+			for comment in mastercomment[i.pid]:
+				try:
+					vote = commentvotes.objects.get(uid = curruser.uid, cid=comment.cid)
+					allcommentvotes[comment.cid] = vote.value
+				except:
+					allcommentvotes[comment.cid] = 0
 
 		for post in allposts:
 			try:
@@ -497,7 +532,7 @@ def myposts(request):
 			except:
 				votevalue[post.pid] = 0
 
-		return render(request, 'myposts.html', {'count' : len(allposts),'votevalue':votevalue,'commentform':commentform,'curruser':curruser,'allposts':allposts,'mastercomment':mastercomment})
+		return render(request, 'myposts.html', {'count' : len(allposts),'allcommentvotes':allcommentvotes,'votevalue':votevalue,'commentform':commentform,'curruser':curruser,'allposts':allposts,'mastercomment':mastercomment})
 
 	else:
 		return redirect('/')

@@ -157,11 +157,42 @@
                                     {% for comment in commentarray %}
                                     <div class = 'well'>
                                       <div class = 'row'>
-                                      <div class = 'col-md-9'>
-                                        {{ comment.commenttext}}
-
+                                        <div class = 'col-md-3'>
+                                          <div class = 'row'>
+                                            <div class = 'col-md-4'>
+                                              <form method = 'POST' action = '/upvotecomment/{{comment.cid}}' id = 'upcomment{{comment.cid}}'>
+                                                {% csrf_token %}
+                                                {% for commentid,commentvotevalue in allcommentvotes.items %}
+                                                  {% if commentid == comment.cid %}
+                                                    {% if commentvotevalue == 1 %} 
+                                                      <input type = 'submit' class = 'btn btn-md btn-success' value = '{{comment.upcount}}'>
+                                                    {% else %}
+                                                     <input type = 'submit' class = 'btn btn-md btn-default' value = '{{comment.upcount}}'>
+                                                    {% endif %}
+                                                  {% endif %}
+                                                {% endfor %}
+                                              </form>
+                                            </div>
+                                            <div class = 'col-md-4'>
+                                              <form method = 'POST' action = '/downvotecomment/{{comment.cid}}' id = 'downcomment{{comment.cid}}'>
+                                                {% csrf_token %}
+                                                {% for commentid,commentvotevalue in allcommentvotes.items %}
+                                                  {% if commentid == comment.cid %}
+                                                    {% if commentvotevalue == -1 %} 
+                                                      <input type = 'submit' class = 'btn btn-md btn-danger' value = '{{comment.downcount}}'>
+                                                    {% else %}
+                                                     <input type = 'submit' class = 'btn btn-md btn-default' value = '{{comment.downcount}}'>
+                                                    {% endif %}
+                                                  {% endif %}
+                                                {% endfor %}
+                                             </form>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      <div class = 'col-md-6'>
+                                        {{ comment.commenttext }}
                                       </div>
-                                      {% if comment.uid == user.uid %}
+                                      {% if comment.uid == curruser.uid %}
                                       <div class = 'col-md-1'><b>you</b></div>
                                       <div class = 'col-md-1'>
                                         <form method = 'link' action = '/deletecomment/{{comment.cid}}'>
@@ -171,7 +202,6 @@
                                       {% else %}
                                       <div class= 'col-md-3' style = 'text-align:right'>
                                         {{ comment.fname}} {{comment.lname}}
-
                                       </div>
                                       {% endif %}
                                     </div>
