@@ -30,7 +30,9 @@
                     <li><a href="/discover"><i class="fa fa-line-chart"></i> &nbsp&nbspDiscover </a></li>
                     <li><a href="/myposts"><i class="fa fa-user"></i> &nbspMy Posts </a></li>
                 </ul>
-                         
+                <ul class="nav hidden-xs" id="lg-menu">
+                    <li ><a href="/update"><i class="fa fa-suitcase"></i>&nbspUpdate Profile</a></li>
+                </ul>                         
             </div>
             <!-- /sidebar -->
           
@@ -336,7 +338,7 @@
 </div>
 
 	<!-- script references -->
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script src="../../static/files/js/jqfolyf.js"></script>
 		<script src="../../static/files/js/bootstrap.min.js"></script>
 		<script src="./../static/files/js/homescripts.js"></script>
     {% for key,commentarr in mastercomment.items %}

@@ -18,7 +18,7 @@ def index(request):
 			else:
 				return redirect('/home')
 		except:
-			newuser = usersinfo(loginid = request.user.email, role = 1, number = 0, status = 0)
+			newuser = usersinfo(loginid = request.user.email, role = 1, status = 0)
 			newuser.save()
 			return render(request, 'index.html')
 	else:
@@ -36,7 +36,6 @@ def update(request):
 			curruser.loginid = request.POST['loginid']
 			curruser.fname = request.POST['fname']
 			curruser.lname = request.POST['lname']
-			curruser.number = request.POST['number']
 			curruser.status = 1
 			try:
 				curruser.userimage = request.FILES['userimage']
@@ -51,7 +50,7 @@ def update(request):
 
 		try:
 			curruser = usersinfo.objects.get(loginid = request.user.email)
-			form = userinfo_form(initial = {'loginid':curruser.loginid, 'fname':curruser.fname, 'lname': curruser.lname, 'number':curruser.number})
+			form = userinfo_form(initial = {'loginid':curruser.loginid, 'fname':curruser.fname, 'lname': curruser.lname})
 			form.fields['loginid'].widget.attrs['readonly'] = True
 			try:
 				follow = follows.objects.get(uid = curruser.uid, fid = curruser.uid)
@@ -60,7 +59,7 @@ def update(request):
 				newfollow.save()
 			return render(request, 'update.html', {'form':form})
 		except:
-			newuser = usersinfo(loginid = request.user.email, role = 1, number = 0, status = 0)
+			newuser = usersinfo(loginid = request.user.email, role = 1, status = 0)
 			newuser.save()
 			return redirect('/update')
 
@@ -259,7 +258,7 @@ def viewuser(request,param):
 
 			for post in allposts:
 				try:
-					vote = postvotes.objects.get(pid = post.pid)
+					vote = postvotes.objects.get(pid = post.pid,uid = curruser.uid)
 					votevalue[post.pid] = vote.value
 				except:
 					votevalue[post.pid] = 0

@@ -31,7 +31,9 @@
                     <li><a href="/discover"><i class="fa fa-line-chart"></i> &nbsp&nbspDiscover </a></li>
                     <li><a href="/myposts"><i class="fa fa-user"></i> &nbspMy Posts </a></li>
                 </ul>
-              
+                <ul class="nav hidden-xs" id="lg-menu">
+                    <li ><a href="/update"><i class="fa fa-suitcase"></i>&nbspUpdate Profile</a></li>
+                </ul>              
             </div>
             <!-- /sidebar -->
           
@@ -227,9 +229,101 @@
 </div>
 
 	<!-- script references -->
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script src="../../static/files/js/jqfolyf.js"></script>
 		<script src="../../static/files/js/bootstrap.min.js"></script>
 		<script src="./../static/files/js/homescripts.js"></script>
+    {% for key,commentarr in mastercomment.items %}
+      {% for comment in commentarr %}
+    <script>
+      $("#upcomment{{comment.cid}}").submit(function(e)
+      {
+          formurl = $(this).attr("action");
+          $.ajax(
+          {
+            url : formurl,
+            type : "POST",
+            data : 
+            {
+            "csrfmiddlewaretoken" : $("#upcomment{{comment.cid}} input[name=csrfmiddlewaretoken]").val(),
+            },
+            success:function(data, textStatus, jqXHR)
+            {
+
+              if( $("#upcomment{{comment.cid}} input[type=submit]").attr('class') == "btn btn-md btn-success")
+              {
+                $("#upcomment{{comment.cid}} input[type=submit]").attr('class','btn btn-md btn-default');
+              }
+              else
+              {
+                $("#downcomment{{comment.cid}} input[type=submit]").attr('class','btn btn-md btn-default');
+                $("#upcomment{{comment.cid}} input[type=submit]").attr('class','btn btn-md btn-success');
+              }
+              $("#upcomment{{comment.cid}} input[type=submit]").val(data['upcount']);
+              $("#downcomment{{comment.cid}} input[type=submit]").val(data['downcount']);
+
+
+            },
+            error:function(jqXHR, textStatus, errorThrown)
+            {
+              alert("server is down, please try after some time")
+              alert(errorThrown)
+            }
+          });
+
+          e.preventDefault();
+          e.unbind();
+      });
+
+      $("#downcomment{{comment.cid}}").submit(function(e)
+      {
+          formurl = $(this).attr("action");
+          $.ajax(
+          {
+            url : formurl,
+            type : "POST",
+            data : 
+            {
+            "csrfmiddlewaretoken" : $("#downcomment{{comment.cid}} input[name=csrfmiddlewaretoken]").val(),
+            },
+            success:function(data, textStatus, jqXHR)
+            {
+
+              if( $("#downcomment{{comment.cid}} input[type=submit]").attr('class') == "btn btn-md btn-danger")
+              {
+                $("#downcomment{{comment.cid}} input[type=submit]").attr('class','btn btn-md btn-default');
+              }
+              else
+              {
+                $("#downcomment{{comment.cid}} input[type=submit]").attr('class','btn btn-md btn-danger');
+                $("#upcomment{{comment.cid}} input[type=submit]").attr('class','btn btn-md btn-default');
+              }
+              $("#upcomment{{comment.cid}} input[type=submit]").val(data['upcount']);
+              $("#downcomment{{comment.cid}} input[type=submit]").val(data['downcount']);
+
+            },
+            error:function(jqXHR, textStatus, errorThrown)
+            {
+              alert("server is down, please try after some time")
+              alert(errorThrown)
+            }
+          });
+
+          e.preventDefault();
+          e.unbind();
+      });
+
+    </script>
+
+
+
+
+
+
+      {% endfor %}
+    {% endfor %}
+
+
+
   {% for post in allposts %}
     <script>
       $("#uppost{{post.pid}}").submit(function(e)

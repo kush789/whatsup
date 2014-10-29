@@ -10,7 +10,6 @@ class usersinfo(models.Model):
 	status = models.IntegerField(default = 1)	#active -> 1 inactive -> 0
 	fname = models.CharField(default = "", max_length = 30)
 	lname = models.CharField(default = "", max_length = 30)
-	number = models.IntegerField(max_length = 20)
 	userimage = models.ImageField(upload_to="userimg/")
 
 
