@@ -17,7 +17,7 @@ class userinfo_form(forms.ModelForm):
 
 class post_form(forms.ModelForm):
 	posttitle = forms.CharField(max_length = 50, label = 'Title',widget = forms.TextInput)
-	posttext = forms.CharField(max_length = 300, label = 'Body', widget = forms.TextInput)
+	posttext = forms.CharField(max_length = 300, label = 'Body', widget=forms.widgets.Textarea())
 	postimage = forms.FileField(required = False, label = 'Upload Image')
 
 	class Meta:
